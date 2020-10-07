@@ -173,7 +173,6 @@ void QNode::sendIniPoseMsg( std_msgs::String msg )
 void QNode::sendSetModeMsg( std_msgs::String msg )
 {
   set_mode_msg_pub_.publish ( msg );
-
   log( Info , "Set BaseModule" );
 }
 

@@ -5,7 +5,8 @@
 
 import rospy
 import tf
-import queue
+#import queue
+from multiprocessing import Queue
 import threading
 import copy
 # import object_distribtion

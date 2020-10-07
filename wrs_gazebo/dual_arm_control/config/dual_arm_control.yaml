@@ -3,7 +3,7 @@ mobile_dual_arm:
   joint_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 50  
-  
+ 
   # Position Controllers ---------------------------------------
   r_joint1_position:
     type: effort_controllers/JointPositionController

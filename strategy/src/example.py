@@ -54,7 +54,7 @@ def start_sub():
     
 
 class exampleTask:
-    def __init__(self, _name = '/robotis'):
+    def __init__(self, _name ='/robotis'):
         """Initial object."""
         en_sim = False
         if len(sys.argv) >= 2:
@@ -66,7 +66,7 @@ class exampleTask:
         self.name = _name
         self.state = initPose
         self.nextState = idle
-        self.arm = ArmTask(self.name + '_arm')
+        self.arm = ArmTask(self.name +'_arm',1)
         self.pick_list = 2
         self.pos   = (0, 0, 0)
         self.euler = (0, 0, 0)
@@ -290,7 +290,7 @@ class exampleTask:
                 self.state = self.nextState
             
 if __name__ == '__main__':
-    print "2222222"
+    #print "2222222"
     rospy.init_node('example')        #enable this node
     right = exampleTask('right')      #Set up right arm controller
     left  = exampleTask('left')       #Set up left arm controller

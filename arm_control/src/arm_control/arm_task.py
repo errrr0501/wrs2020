@@ -5,7 +5,8 @@
 
 import rospy
 import tf
-import queue
+#import queue
+from multiprocessing import Queue
 import copy
 # import object_distribtion
 
@@ -13,6 +14,7 @@ from math import radians, degrees, sin, cos, pi
 from numpy import multiply
 from enum import IntEnum
 # from Queue import Queue
+import Queue as queue
 
 import numpy as np
 

@@ -11,6 +11,8 @@
   <!--xacro:include filename="$(find single_arm_description)/urdf/materials.xacro" /-->
   <xacro:include filename="$(find mobile_dual_arm)/urdf/mobile_dual_arm.gazebo" />
   <!--xacro:include filename="$(find mobile_table)/urdf/mobile_table.xacro" /-->
+  <xacro:include filename="$(find mobile_dual_arm)/urdf/shelf.xarco" />
+  <xacro:include filename="$(find mobile_dual_arm)/urdf/shelf1.xarco" />
 
   <link name="world"/>
 
@@ -32,6 +34,21 @@
     <parent link="mobile_base_footprint"/>
     <child link="base_link"/>
   </joint>
+  <joint name="fixed_shelf1" type="fixed">
+      <!-- <origin
+       	xyz="-0.65 0.4625 -0.05"
+       	rpy="0 0 3.1416" /> -->
+    <parent link="world"/>
+    <child link="shelf_higher"/>
+  </joint>
+  <joint name="fixed_shelf2" type="fixed">
+    <!-- <origin
+      xyz="0.947 0.9 0 "
+     	rpy="0 0 1.5708" /> -->
+    <parent link="world"/>
+    <child link="shelf_higher2"/>
+  </joint>
+
 
   <xacro:mir_100 prefix="mobile_"/>
   
