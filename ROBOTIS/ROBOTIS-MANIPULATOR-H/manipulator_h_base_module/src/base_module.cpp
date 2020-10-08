@@ -27,6 +27,14 @@
 
 using namespace robotis_manipulator_h;
 
+double diff_curr_goal_now = 0;
+double diff_curr_goal = 0;
+double bias_diff = 0;
+int timer1 = 0;
+
+
+
+
 BaseModule::BaseModule()
   : control_cycle_msec_(0)
 {
@@ -635,10 +643,27 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     double joint_curr_position = dxl->dxl_state_->present_position_;
     double joint_goal_position = dxl->dxl_state_->goal_position_;
 
+
     joint_state_->curr_joint_state_[joint_name_to_id_[joint_name]].position_ = joint_curr_position;
     joint_state_->goal_joint_state_[joint_name_to_id_[joint_name]].position_ = joint_goal_position;
+
   }
 
+  if(robotis_->is_moving_ == true && timer1 >= 4)
+  {
+    diff_curr_goal_now = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
+    bias_diff = std::abs((diff_curr_goal_now - diff_curr_goal)*100000);
+    if(bias_diff >= 100)
+    {
+      std::cout<<"====== alart! Robot hit something! ======"<<std::endl;
+      stop();
+    }
+    //std::cout<<bias_diff<<std::endl;
+    diff_curr_goal = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
+    timer1 = 0;
+  }
+  timer1++;
+  
   /*----- forward kinematics -----*/
   if( robotis_->is_ik == false )
   {

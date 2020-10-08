@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <algorithm>
+#include <iostream>
 
 #if defined(__linux__)
 #include "group_bulk_read.h"
@@ -198,7 +199,10 @@ bool GroupBulkRead::isAvailable(uint8_t id, uint16_t address, uint16_t data_leng
   start_addr = address_list_[id];
 
   if (address < start_addr || start_addr + length_list_[id] - data_length < address)
+  {
+    std::cout<<"isAvailable22: "<<(address < start_addr)<<" "<<start_addr<<" "<<length_list_[id]<<" "<<data_length<<" "<<address<<std::endl;
     return false;
+  }
 
   return true;
 }

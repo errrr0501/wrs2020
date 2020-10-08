@@ -150,9 +150,10 @@ Robot::Robot(std::string robot_file_path, std::string dev_desc_dir_path)
                 dxl->bulk_read_items_.push_back(new ControlTableItem());
                 ControlTableItem *dest_item = dxl->bulk_read_items_[_i];
                 ControlTableItem *src_item  = dxl->ctrl_table_[sub_tokens[_i]];
-
+                std::cout<<"src_item->address_: "<<src_item->address_<<" "<<sub_tokens[_i]<<" "<<src_item->item_name_<<std::endl;
                 dest_item->item_name_       = src_item->item_name_;
-                dest_item->address_         = indirect_data_addr;
+                // dest_item->address_         = indirect_data_addr;
+                dest_item->address_         = src_item->address_;
                 dest_item->access_type_     = src_item->access_type_;
                 dest_item->memory_type_     = src_item->memory_type_;
                 dest_item->data_length_     = src_item->data_length_;
