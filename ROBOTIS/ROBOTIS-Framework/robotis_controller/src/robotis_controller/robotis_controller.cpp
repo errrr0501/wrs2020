@@ -482,15 +482,19 @@ void RobotisController::initializeDevice(const std::string init_file_path)
         {
           int addr_leng = dxl->bulk_read_items_[i]->data_length_;
 
-          bulkread_data_length += addr_leng;
+          // bulkread_data_length += addr_leng;
+          if(i == (int)dxl->bulk_read_items_.size() - 1)
+            bulkread_data_length = dxl->bulk_read_items_[i]->address_ - bulkread_start_addr + dxl->bulk_read_items_[i]->data_length_;
           for (int l = 0; l < addr_leng; l++)
           {
             // ROS_WARN("[%12s] INDIR_ADDR: %d, ITEM_ADDR: %d", joint_name.c_str(), indirect_addr, dxl->ctrl_table[dxl->bulk_read_items[i]->item_name]->address + _l);
 
             read2Byte(joint_name, indirect_addr, &data16);
+            std::cout<<"read2Byte: "<<(data16)<<std::endl;
             if (data16 != dxl->ctrl_table_[dxl->bulk_read_items_[i]->item_name_]->address_ + l)
             {
               write2Byte(joint_name, indirect_addr, dxl->ctrl_table_[dxl->bulk_read_items_[i]->item_name_]->address_ + l);
+              std::cout<<"write2Byte: "<<(dxl->ctrl_table_[dxl->bulk_read_items_[i]->item_name_]->address_ + l)<<std::endl;
             }
             indirect_addr += 2;
           }
@@ -924,6 +928,8 @@ void RobotisController::process()
           {
             bool      updated = false;
             uint32_t  data    = 0;
+            uint16_t  data_test    = 0;
+            uint8_t   error   = 0;
             for (int i = 0; i < dxl->bulk_read_items_.size(); i++)
             {
               ControlTableItem *item = dxl->bulk_read_items_[i];
@@ -932,20 +938,35 @@ void RobotisController::process()
                 updated = true;
                 data = port_to_bulk_read_[port_name]->getData(dxl->id_, item->address_, item->data_length_);
 
-                // change dxl_state
+                if (i == 0)
+                  std::cout<<joint_name<<": "<<std::endl;
                 if (dxl->present_position_item_ != 0 && item->item_name_ == dxl->present_position_item_->item_name_)
+                {
                   dxl->dxl_state_->present_position_ = dxl->convertValue2Radian(data) - dxl->dxl_state_->position_offset_; // remove offset
+                  std::cout<<"    "<<"present_position_: "<<(dxl->dxl_state_->present_position_ * 180 / M_PI)<<std::endl;
+                }
                 else if (dxl->present_velocity_item_ != 0 && item->item_name_ == dxl->present_velocity_item_->item_name_)
+                {
                   dxl->dxl_state_->present_velocity_ = dxl->convertValue2Velocity(data);
+                  std::cout<<"    "<<"present_velocity_: "<<dxl->dxl_state_->present_velocity_<<std::endl;
+                }
                 else if (dxl->present_current_item_ != 0 && item->item_name_ == dxl->present_current_item_->item_name_)
+                {
                   dxl->dxl_state_->present_torque_ = dxl->convertValue2Torque(data);
+                  std::cout<<"    "<<"present_torque_: "<<dxl->dxl_state_->present_torque_<<std::endl;
+                }
                 else if (dxl->goal_position_item_ != 0 && item->item_name_ == dxl->goal_position_item_->item_name_)
+                {
                   dxl->dxl_state_->goal_position_ = dxl->convertValue2Radian(data) - dxl->dxl_state_->position_offset_; // remove offset
+                }
                 else if (dxl->goal_velocity_item_ != 0 && item->item_name_ == dxl->goal_velocity_item_->item_name_)
+                {
                   dxl->dxl_state_->goal_velocity_ = dxl->convertValue2Velocity(data);
+                }
                 else if (dxl->goal_current_item_ != 0 && item->item_name_ == dxl->goal_current_item_->item_name_)
+                {
                   dxl->dxl_state_->goal_torque_ = dxl->convertValue2Torque(data);
-
+                }
                 dxl->dxl_state_->bulk_read_table_[item->item_name_] = data;
               }
             }

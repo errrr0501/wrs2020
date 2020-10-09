@@ -8,8 +8,8 @@
 #include "std_msgs/Int32.h"
 #include "std_msgs/Float64.h"
 #include "std_msgs/String.h"
-#include "/home/errrr/dual_arm_ws/devel/.private/linear_motion/include/linear_motion/Slide_Feedback.h"
-#include "/home/errrr/dual_arm_ws/devel/.private/manipulator_h_base_module_msgs/include/manipulator_h_base_module_msgs/SlideCommand.h"   //new
+#include "/home/iclab/dual_arm_ws/devel/.private/linear_motion/include/linear_motion/Slide_Feedback.h"
+#include "/home/iclab/dual_arm_ws/devel/.private/manipulator_h_base_module_msgs/include/manipulator_h_base_module_msgs/SlideCommand.h"   //new
 
 #include "modbus/modbus.h"
 

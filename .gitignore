@@ -7,5 +7,5 @@
 *.h5
 .DS_Store
 *.png
-
+.rosinstall*
 CATKIN_IGNORE

@@ -21,6 +21,7 @@
  *      Author: zerom
  */
 
+#include <iostream>
 #include "robotis_device/dynamixel.h"
 
 using namespace robotis_framework;
@@ -83,7 +84,6 @@ double Dynamixel::convertValue2Radian(int32_t value)
 //    return max_radian_;
 //  else if (radian < min_radian_)
 //    return min_radian_;
-
   return radian;
 }
 
