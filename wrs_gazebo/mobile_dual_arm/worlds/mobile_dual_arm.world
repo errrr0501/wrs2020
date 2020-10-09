@@ -22,7 +22,6 @@
     </physics>
 
 
-
     <!-- Focus camera on tall pendulum -->
     <gui fullscreen='0'>
       <camera name='user_camera'>
