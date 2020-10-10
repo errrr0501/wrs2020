@@ -887,5 +887,6 @@ void BaseModule::generateSlideTrajProcess()
   Eigen::MatrixXd tra = robotis_framework::calcMinimumJerkTra(ini_slide_value, 0.0, 0.0, tar_slide_value, 0.0, 0.0,
                                                                 robotis_->smp_time_, robotis_->mov_time_);
   robotis_->calc_slide_tra_.resize(robotis_->all_time_steps_, 1);
-  robotis_->calc_slide_tra_ = tra;  
+  robotis_->calc_slide_tra_ = tra;
+    
 }
