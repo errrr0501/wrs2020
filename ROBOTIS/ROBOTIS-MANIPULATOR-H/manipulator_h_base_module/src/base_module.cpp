@@ -744,6 +744,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
   {
     std::string joint_name = state_iter->first;
     result_[joint_name]->goal_position_ = joint_state_->goal_joint_state_[joint_name_to_id_[joint_name]].position_;
+    //std::cout<<"======================="<<result_[joint_name]->goal_position_<<"====================="<<std::endl;
   }
   slide_->slide_pub();
   /*---------- initialize count number ----------*/
