@@ -27,6 +27,7 @@
   <depend>robotis_math</depend>
   <depend>robotis_framework_common</depend>
   <depend>manipulator_h_kinematics_dynamics</depend>
+  <depend>linear_motion</depend>
   <depend>boost</depend>
   <depend>eigen</depend>
   <depend>yaml-cpp</depend>

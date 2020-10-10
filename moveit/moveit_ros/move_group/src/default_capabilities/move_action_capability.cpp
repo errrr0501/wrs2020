@@ -44,9 +44,9 @@
 #include <moveit/utils/message_checks.h>
 #include <moveit/move_group/capability_names.h>
 
-#include "ros/ros.h"          // 加入ROS公用程序
-#include "std_msgs/String.h"  // 所要publish的message header，在此是std_msgs package底下的String.msg
-#include <sstream>
+// #include "ros/ros.h"          // 加入ROS公用程序
+// #include "std_msgs/String.h"  // 所要publish的message header，在此是std_msgs package底下的String.msg
+// #include <sstream>
 namespace move_group
 {
 MoveGroupMoveAction::MoveGroupMoveAction()
@@ -66,9 +66,9 @@ void MoveGroupMoveAction::initialize()
 void MoveGroupMoveAction::executeMoveCallback(const moveit_msgs::MoveGroupGoalConstPtr& goal)
 {
 
-  ros::init(argc, argv, "moveit_joint_result");  
+  // ros::init(argc, argv, "moveit_joint_result");  
 
-  ros::NodeHandle n;     
+  // ros::NodeHandle n;     
   setMoveState(PLANNING);
   // before we start planning, ensure that we have the latest robot state received...
   context_->planning_scene_monitor_->waitForCurrentRobotState(ros::Time::now());

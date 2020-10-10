@@ -453,21 +453,10 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
 
   if (ik_success == true && slide_success == true)
   {
-    manipulator_h_base_module_msgs::JointPose p2p_msg;
-
-    for ( int id = 1; id <= MAX_JOINT_ID; id++ )
-    {
-      p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
-      p2p_msg.value.push_back(manipulator_->manipulator_link_data_[id]->joint_angle_);
-    }
-    p2p_msg.slide_pos = slide_->goal_slide_pos;
-    p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
-    robotis_->joint_pose_msg_ = p2p_msg;
-
     if (robotis_->is_moving_ == false)
     {
-      tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
-      delete tra_gene_thread_;
+      int a = 0;
+      //MOVEIT
     }
     else
     {

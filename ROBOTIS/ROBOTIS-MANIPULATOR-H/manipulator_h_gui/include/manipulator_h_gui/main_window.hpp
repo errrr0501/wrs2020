@@ -89,6 +89,7 @@ public Q_SLOTS:
     void on_curr_pos_button_clicked( bool check );
     void on_des_pos_button_clicked( bool check );
     void on_des_p2p_button_clicked( bool check );
+    void on_des_MoveIt_button_clicked( bool check );
 
     void on_ini_pose_button_clicked( bool check );
     void on_set_mode_button_clicked( bool check );
