@@ -490,11 +490,11 @@ void RobotisController::initializeDevice(const std::string init_file_path)
             // ROS_WARN("[%12s] INDIR_ADDR: %d, ITEM_ADDR: %d", joint_name.c_str(), indirect_addr, dxl->ctrl_table[dxl->bulk_read_items[i]->item_name]->address + _l);
 
             read2Byte(joint_name, indirect_addr, &data16);
-            std::cout<<"read2Byte: "<<(data16)<<std::endl;
+            //std::cout<<"read2Byte: "<<(data16)<<std::endl;
             if (data16 != dxl->ctrl_table_[dxl->bulk_read_items_[i]->item_name_]->address_ + l)
             {
               write2Byte(joint_name, indirect_addr, dxl->ctrl_table_[dxl->bulk_read_items_[i]->item_name_]->address_ + l);
-              std::cout<<"write2Byte: "<<(dxl->ctrl_table_[dxl->bulk_read_items_[i]->item_name_]->address_ + l)<<std::endl;
+              //std::cout<<"write2Byte: "<<(dxl->ctrl_table_[dxl->bulk_read_items_[i]->item_name_]->address_ + l)<<std::endl;
             }
             indirect_addr += 2;
           }
@@ -938,22 +938,22 @@ void RobotisController::process()
                 updated = true;
                 data = port_to_bulk_read_[port_name]->getData(dxl->id_, item->address_, item->data_length_);
 
-                if (i == 0)
-                  std::cout<<joint_name<<": "<<std::endl;
+                //if (i == 0)
+                  //std::cout<<joint_name<<": "<<std::endl;
                 if (dxl->present_position_item_ != 0 && item->item_name_ == dxl->present_position_item_->item_name_)
                 {
                   dxl->dxl_state_->present_position_ = dxl->convertValue2Radian(data) - dxl->dxl_state_->position_offset_; // remove offset
-                  std::cout<<"    "<<"present_position_: "<<(dxl->dxl_state_->present_position_ * 180 / M_PI)<<std::endl;
+                  //std::cout<<"    "<<"present_position_: "<<(dxl->dxl_state_->present_position_ * 180 / M_PI)<<std::endl;
                 }
                 else if (dxl->present_velocity_item_ != 0 && item->item_name_ == dxl->present_velocity_item_->item_name_)
                 {
                   dxl->dxl_state_->present_velocity_ = dxl->convertValue2Velocity(data);
-                  std::cout<<"    "<<"present_velocity_: "<<dxl->dxl_state_->present_velocity_<<std::endl;
+                  //std::cout<<"    "<<"present_velocity_: "<<dxl->dxl_state_->present_velocity_<<std::endl;
                 }
                 else if (dxl->present_current_item_ != 0 && item->item_name_ == dxl->present_current_item_->item_name_)
                 {
                   dxl->dxl_state_->present_torque_ = dxl->convertValue2Torque(data);
-                  std::cout<<"    "<<"present_torque_: "<<dxl->dxl_state_->present_torque_<<std::endl;
+                  //std::cout<<"    "<<"present_torque_: "<<dxl->dxl_state_->present_torque_<<std::endl;
                 }
                 else if (dxl->goal_position_item_ != 0 && item->item_name_ == dxl->goal_position_item_->item_name_)
                 {

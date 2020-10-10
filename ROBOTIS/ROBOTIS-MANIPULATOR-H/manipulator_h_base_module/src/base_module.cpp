@@ -32,8 +32,13 @@
 using namespace robotis_manipulator_h;
 
 double diff_curr_goal_now = 0;
-double diff_curr_goal = 0;
-double bias_diff = 0;
+double current_now = 0;
+
+double curr_goal_offset = 0;
+double current_offset = 0;
+
+double bias_pos = 0;
+double bias_cur = 0;
 int timer1 = 0;
 
 
@@ -722,24 +727,34 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
 
     double joint_curr_position = dxl->dxl_state_->present_position_;
     double joint_goal_position = dxl->dxl_state_->goal_position_;
+    double joint_curr_current  = dxl->dxl_state_->present_torque_;
+    //std::cout<<"curr: "<<joint_curr_current<<std::endl;
 
 
     joint_state_->curr_joint_state_[joint_name_to_id_[joint_name]].position_ = joint_curr_position;
-    joint_state_->goal_joint_state_[joint_name_to_id_[joint_name]].position_ = joint_goal_position;
+    joint_state_->curr_joint_state_[joint_name_to_id_[joint_name]].effort_   = joint_curr_current;
 
+    joint_state_->goal_joint_state_[joint_name_to_id_[joint_name]].position_ = joint_goal_position;
   }
 
   if(robotis_->is_moving_ == true && timer1 >= 4)
   {
     diff_curr_goal_now = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
-    bias_diff = std::abs((diff_curr_goal_now - diff_curr_goal)*100000);
-    if(bias_diff >= 100)
+    current_now        = joint_state_->curr_joint_state_[1].effort_;
+
+    //std::cout<<current_now<<","<<current_offset<<std::endl;
+    bias_pos = std::abs((diff_curr_goal_now - curr_goal_offset)*100000);
+    bias_cur = std::abs((current_now - current_offset)*10);
+    std::cout<<bias_cur<<std::endl;
+
+    if(bias_pos >= 100)
     {
       std::cout<<"====== alart! Robot hit something! ======"<<std::endl;
       stop();
     }
-    //std::cout<<bias_diff<<std::endl;
-    diff_curr_goal = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
+
+    curr_goal_offset = diff_curr_goal_now;
+    current_offset   = current_now;
     timer1 = 0;
   }
   timer1++;
@@ -824,6 +839,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
   {
     std::string joint_name = state_iter->first;
     result_[joint_name]->goal_position_ = joint_state_->goal_joint_state_[joint_name_to_id_[joint_name]].position_;
+    //std::cout<<"======================="<<result_[joint_name]->goal_position_<<"====================="<<std::endl;
   }
   slide_->slide_pub();
   /*---------- initialize count number ----------*/
@@ -899,5 +915,6 @@ void BaseModule::generateSlideTrajProcess()
   Eigen::MatrixXd tra = robotis_framework::calcMinimumJerkTra(ini_slide_value, 0.0, 0.0, tar_slide_value, 0.0, 0.0,
                                                                 robotis_->smp_time_, robotis_->mov_time_);
   robotis_->calc_slide_tra_.resize(robotis_->all_time_steps_, 1);
-  robotis_->calc_slide_tra_ = tra;  
+  robotis_->calc_slide_tra_ = tra;
+
 }
