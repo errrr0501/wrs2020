@@ -24,6 +24,10 @@
 #include <stdio.h>
 
 #include "manipulator_h_base_module/base_module.h"
+#include <ros/ros.h>
+#include <actionlib/client/simple_action_client.h>
+#include <moveit_task_constructor_msgs/ExecuteTaskSolutionAction.h>
+
 
 using namespace robotis_manipulator_h;
 
@@ -455,8 +459,17 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
   {
     if (robotis_->is_moving_ == false)
     {
-      int a = 0;
-      //MOVEIT
+      slide->goal_slide_pos
+      actionlib::SimpleActionClient<moveit_task_constructor_msgs::ExecuteTaskSolutionAction> ac("execute_task_solution");
+      ac.waitForServer();
+    
+      moveit_task_constructor_msgs::ExecuteTaskSolutionGoal goal;
+      //s.fillMessage(goal.solution, pimpl()->introspection_.get());
+      //s.start()->scene()->getPlanningSceneMsg(goal.solution.start_scene);
+      ac.sendGoal(goal);
+      ac.waitForResult();
+      return ac.getResult()->error_code;
+}
     }
     else
     {
