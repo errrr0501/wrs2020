@@ -69,7 +69,8 @@ bool QNode::init() {
   joint_pose_msg_pub_ = n.advertise<manipulator_h_base_module_msgs::JointPose>("joint_pose_msg", 0);
   kinematics_pose_msg_pub_ = n.advertise<manipulator_h_base_module_msgs::KinematicsPose>("kinematics_pose_msg", 0);
   p2p_pose_msg_pub_ = n.advertise<manipulator_h_base_module_msgs::P2PPose>("p2p_pose_msg", 0);
-
+  moveit_pose_msg_pub_ = n.advertise<manipulator_h_base_module_msgs::P2PPose>("moveit_pose_msg", 0);
+  
   get_joint_pose_client_ = n.serviceClient<manipulator_h_base_module_msgs::GetJointPose>("get_joint_pose", 0);
   get_kinematics_pose_client_ = n.serviceClient<manipulator_h_base_module_msgs::GetKinematicsPose>("get_kinematics_pose", 0);
 
@@ -161,6 +162,12 @@ void QNode::sendP2PPoseMsg( manipulator_h_base_module_msgs::P2PPose msg )
   p2p_pose_msg_pub_.publish( msg );
 
   log( Info , "Send P2P Pose Msg" );
+}
+void QNode::sendMoveItPoseMsg( manipulator_h_base_module_msgs::P2PPose msg )
+{
+  moveit_pose_msg_pub_.publish( msg );
+
+  log( Info , "Send MoveIt Pose Msg" );
 }
 
 void QNode::sendIniPoseMsg( std_msgs::String msg )

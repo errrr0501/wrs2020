@@ -94,7 +94,6 @@ void ExecuteTaskSolutionCapability::initialize() {
 void ExecuteTaskSolutionCapability::goalCallback(
     const moveit_task_constructor_msgs::ExecuteTaskSolutionGoalConstPtr& goal) {
 	moveit_task_constructor_msgs::ExecuteTaskSolutionResult result;
-
 	if (!context_->plan_execution_) {
 		const std::string response = "Cannot execute solution. ~allow_trajectory_execution was set to false";
 		result.error_code.val = moveit_msgs::MoveItErrorCodes::CONTROL_FAILED;
@@ -112,8 +111,9 @@ void ExecuteTaskSolutionCapability::goalCallback(
 
 	const std::string response = context_->plan_execution_->getErrorCodeString(result.error_code);
 
-	if (result.error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
+	if (result.error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS){
 		as_->setSucceeded(result, response);
+	}
 	else if (result.error_code.val == moveit_msgs::MoveItErrorCodes::PREEMPTED)
 		as_->setPreempted(result, response);
 	else

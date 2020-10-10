@@ -148,6 +148,8 @@ void BaseModule::queueThread()
                                                                &BaseModule::kinematicsPoseMsgCallback, this);
   ros::Subscriber p2p_pose_msg_sub = ros_node.subscribe("p2p_pose_msg", 5,
                                                                &BaseModule::p2pPoseMsgCallback, this);
+  ros::Subscriber moveit_pose_msg_sub = ros_node.subscribe("moveit_pose_msg", 5,
+                                                               &BaseModule::moveitPoseMsgCallback, this);
 
   ros::ServiceServer get_joint_pose_server = ros_node.advertiseService("get_joint_pose",
                                                                        &BaseModule::getJointPoseCallback, this);
@@ -390,6 +392,71 @@ void BaseModule::p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPos
     {
       tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
       delete tra_gene_thread_;
+    }
+    else
+    {
+      ROS_INFO("previous task is alive");
+    }
+  }
+  else
+  {
+    ROS_INFO("[end] send trajectory (ik failed)");
+    publishStatusMsg(robotis_controller_msgs::StatusMsg::STATUS_INFO, "End Trajectory (p2p IK Failed)");
+    return;
+  }
+  robotis_->is_ik = false;
+  return;
+}
+
+void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg)
+{
+  // std::cout<<"asdfasdfasdf"<<std::endl;
+  if (enable_ == false)
+    return;
+
+  robotis_->p2p_pose_msg_ = *msg;
+
+  robotis_->ik_id_start_ = 0;
+  robotis_->ik_id_end_   = END_LINK;
+
+  Eigen::Vector3d p2p_positoin;
+  Eigen::Matrix3d p2p_rotation;
+
+  int     max_iter    = 30;
+  double  ik_tol      = 1e-3;
+
+  p2p_positoin << robotis_->p2p_pose_msg_.pose.position.x, 
+                  robotis_->p2p_pose_msg_.pose.position.y, 
+                  robotis_->p2p_pose_msg_.pose.position.z;
+
+  Eigen::Quaterniond p2p_quaterniond(robotis_->p2p_pose_msg_.pose.orientation.w,
+                                        robotis_->p2p_pose_msg_.pose.orientation.x,
+                                        robotis_->p2p_pose_msg_.pose.orientation.y,
+                                        robotis_->p2p_pose_msg_.pose.orientation.z);
+
+  double p2p_phi = robotis_->p2p_pose_msg_.phi;
+
+  p2p_rotation = robotis_framework::convertQuaternionToRotation(p2p_quaterniond);
+
+  manipulator_->forwardKinematics(7);
+  // std::cout<<"p2p_positoinp2p_positoin"<<std::endl<<p2p_positoin<<std::endl;
+  // std::cout<<"p2p_rotationp2p_rotation"<<std::endl<<p2p_rotation<<std::endl;
+
+  robotis_->is_ik = true;
+  
+  bool    slide_success = manipulator_->slideInverseKinematics(p2p_positoin, p2p_rotation, 
+                                                            slide_->slide_pos, slide_->goal_slide_pos);
+
+  // std::cout<<"<<<<<<<<<<<<<<<<<<<slide_->goal_slide_pos<<<<<<<<<<<<<<<<<"<<std::endl<<slide_->goal_slide_pos<<std::endl;
+  bool    ik_success = manipulator_->inverseKinematics(robotis_->ik_id_end_,
+                                                            p2p_positoin, p2p_rotation, p2p_phi, slide_->goal_slide_pos, true);
+
+  if (ik_success == true && slide_success == true)
+  {
+    if (robotis_->is_moving_ == false)
+    {
+      int a = 0;
+      //MOVEIT
     }
     else
     {
