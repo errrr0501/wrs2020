@@ -27,14 +27,16 @@
 
 using namespace robotis_manipulator_h;
 
-double diff_curr_goal_now = 0;
-double current_now = 0;
+double diff_curr_goal_now[MAX_JOINT_ID+1] = {0};
+double current_now[MAX_JOINT_ID+1] = {0};
 
-double curr_goal_offset = 0;
-double current_offset = 0;
+double curr_goal_offset[MAX_JOINT_ID+1] = {0};
+double current_offset[MAX_JOINT_ID+1] = {0};
 
-double bias_pos = 0;
-double bias_cur = 0;
+double bias_pos[MAX_JOINT_ID+1] = {0};
+double bias_cur[MAX_JOINT_ID+1] = {0};
+int if_hit[MAX_JOINT_ID+1] = {0};
+int detect_hit[MAX_JOINT_ID+1] = {0};
 int timer1 = 0;
 
 
@@ -370,6 +372,7 @@ void BaseModule::p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPos
   manipulator_->forwardKinematics(7);
   // std::cout<<"p2p_positoinp2p_positoin"<<std::endl<<p2p_positoin<<std::endl;
   // std::cout<<"p2p_rotationp2p_rotation"<<std::endl<<p2p_rotation<<std::endl;
+  // std::cout<<"======================"<<manipulator_<<"===================="<<std::endl;
 
   robotis_->is_ik = true;
   
@@ -379,7 +382,7 @@ void BaseModule::p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPos
   // std::cout<<"<<<<<<<<<<<<<<<<<<<slide_->goal_slide_pos<<<<<<<<<<<<<<<<<"<<std::endl<<slide_->goal_slide_pos<<std::endl;
   bool    ik_success = manipulator_->inverseKinematics(robotis_->ik_id_end_,
                                                             p2p_positoin, p2p_rotation, p2p_phi, slide_->goal_slide_pos, true);
-
+ 
   if (ik_success == true && slide_success == true)
   {
     manipulator_h_base_module_msgs::JointPose p2p_msg;
@@ -392,7 +395,7 @@ void BaseModule::p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPos
     p2p_msg.slide_pos = slide_->goal_slide_pos;
     p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
     robotis_->joint_pose_msg_ = p2p_msg;
-
+    //std::cout<<"======================"<<manipulator_->manipulator_link_data_[1]->joint_angle_<<"===================="<<std::endl;
     if (robotis_->is_moving_ == false)
     {
       tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
@@ -726,23 +729,79 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
 
   if(robotis_->is_moving_ == true && timer1 >= 4)
   {
-    diff_curr_goal_now = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
-    current_now        = joint_state_->curr_joint_state_[1].effort_;
+    diff_curr_goal_now[1] = joint_state_->goal_joint_state_[1].position_ - joint_state_->curr_joint_state_[1].position_;
+    current_now[1]        = joint_state_->curr_joint_state_[1].effort_;
+
+    diff_curr_goal_now[2] = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
+    current_now[2]        = joint_state_->curr_joint_state_[2].effort_;
 
     //std::cout<<current_now<<","<<current_offset<<std::endl;
-    bias_pos = std::abs((diff_curr_goal_now - curr_goal_offset)*100000);
-    bias_cur = std::abs((current_now - current_offset)*10);
-    std::cout<<bias_cur<<std::endl;
+    bias_pos[1] = std::abs((diff_curr_goal_now[1] - curr_goal_offset[1])*100000);
+    bias_cur[1] = std::abs((current_now[1] - current_offset[1])*10);
 
-    if(bias_pos >= 100)
+    bias_pos[2] = std::abs((diff_curr_goal_now[2] - curr_goal_offset[2])*100000);
+    bias_cur[2] = std::abs((current_now[2] - current_offset[2])*10);
+
+    std::cout<<bias_pos[2]<<","<<bias_cur[2]<<std::endl;
+
+    if(bias_pos[1] >= 300 && bias_cur[1] >= 100)
     {
-      std::cout<<"====== alart! Robot hit something! ======"<<std::endl;
-      stop();
+      if_hit[1]++;
+      if(detect_hit[1] == 0)
+      {
+        detect_hit[1]++;
+        std::cout<<"???[1]"<<std::endl;
+      }
+      if(if_hit[1] >= 2)
+      {
+        std::cout<<"====== alart! Robot hit something[1]! ======"<<std::endl;
+        //stop();  
+        if_hit[1] = 0;      
+      }
     }
 
-    curr_goal_offset = diff_curr_goal_now;
-    current_offset   = current_now;
+    if(bias_pos[2] >= 100 && bias_cur[2] >= 85)
+    {
+      if_hit[2]++;
+      if(detect_hit[2] == 0)
+      {
+        detect_hit[2]++;
+        std::cout<<"???[2]"<<std::endl;
+      }
+      if(if_hit[2] >= 2)
+      {
+        std::cout<<"====== alart! Robot hit something[2]! ======"<<std::endl;
+        //stop();  
+        if_hit[2] = 0;      
+      }
+    }
+
+    curr_goal_offset[1] = diff_curr_goal_now[1];
+    current_offset[1]   = current_now[1];
+
+    curr_goal_offset[2] = diff_curr_goal_now[2];
+    current_offset[2]   = current_now[2]; 
+
     timer1 = 0;
+
+    if(detect_hit[1]>0)
+    {
+      detect_hit[1]++;  
+      if(detect_hit[1] >= 5)
+      {
+        if_hit[1] = 0;
+        detect_hit[1] = 0;
+      }    
+    }
+    if(detect_hit[2]>0)
+    {
+      detect_hit[2]++; 
+      if(detect_hit[2] >= 5)
+      {
+        if_hit[2] = 0;
+        detect_hit[2] = 0;
+      }        
+    }
   }
   timer1++;
   
