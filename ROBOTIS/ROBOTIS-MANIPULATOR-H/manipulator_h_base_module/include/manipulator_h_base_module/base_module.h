@@ -56,6 +56,13 @@
 
 #include "robotis_controller/robotis_controller.h"
 #include "robotis_device/robot.h"
+#include <actionlib/client/simple_action_client.h>
+#include <actionlib/client/terminal_state.h>
+#include "manipulator_h_base_module_msgs/SendGoal.h"
+#include "moveit_msgs/MoveGroupAction.h"
+//#include </home/errrr/dual_arm_ws/devel/include/moveit_msgs/MoveGroupAction.h>
+
+
 
 
 namespace robotis_manipulator_h
@@ -98,6 +105,8 @@ private:
   ros::Publisher  status_msg_pub_;
   ros::Publisher  set_ctrl_module_pub_;
 
+  //ros::ServiceClient  moveit_client;
+
   std::map<std::string, int> joint_name_to_id_;
 
   void queueThread();
@@ -119,6 +128,7 @@ public:
   void kinematicsPoseMsgCallback(const manipulator_h_base_module_msgs::KinematicsPose::ConstPtr& msg);
   void p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);   //new
   void moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);
+  void moveitClient(std::vector<double> moveit_goal);
 
   bool getJointPoseCallback(manipulator_h_base_module_msgs::GetJointPose::Request &req,
                             manipulator_h_base_module_msgs::GetJointPose::Response &res);
@@ -132,8 +142,9 @@ public:
   void generateJointTrajProcess();
   void generateTaskTrajProcess();
   void generateSlideTrajProcess();    //new
+  /* */
 
-
+  
   /* ROS Framework Functions */
   void initialize(const int control_cycle_msec, robotis_framework::Robot *robot);
   void process(std::map<std::string, robotis_framework::Dynamixel *> dxls, std::map<std::string, double> sensors);

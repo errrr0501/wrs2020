@@ -63,9 +63,9 @@
       
       
         </include> 
-        <include file="$(find mobile_dual_arm_config)/launch/move_group.launch">
+        <!-- <include file="$(find mobile_dual_arm_config)/launch/move_group.launch">
           <arg name="publish_monitored_planning_scene" value="true" />
-        </include>
+        </include> -->
       
             <!-- We do not have a robot connected, so publish fake joint states -->
         <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
