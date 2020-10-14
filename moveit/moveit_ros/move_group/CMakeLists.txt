@@ -26,6 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
   LIBRARIES
+    #${PROJECT_NAME}
     moveit_move_group_capabilities_base
   INCLUDE_DIRS
     include
