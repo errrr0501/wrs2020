@@ -94,7 +94,6 @@ mobile_dual_arm:
       - r_joint_5
       - r_joint_6
       - r_joint_7
-      - r_tool_joint
     # gains:
     #   r_joint_1:    {p: 9000.0, i: 0.1, d: 500.0}
     #   r_joint_2:    {p: 9000.0, i: 0.1, d: 500.0}
@@ -113,7 +112,7 @@ mobile_dual_arm:
       r_joint_5:    {p: 600.0, i: 0.1, d: 40.0}
       r_joint_6:    {p: 600.0, i: 0.1, d: 40.0}
       r_joint_7:    {p: 600.0, i: 0.1, d: 40.0}
-      r_tool_joint: {p: 600.0, i: 0.1, d: 40.0}
+      #r_tool_joint: {p: 600.0, i: 0.1, d: 40.0}
       joint_right:  {p: 8000.0, i: 0.1, d: 500}
 
   left_arm_controller:
@@ -127,7 +126,6 @@ mobile_dual_arm:
       - l_joint_5
       - l_joint_6
       - l_joint_7
-      - l_tool_joint
     # gains:
     #   l_joint_1:    {p: 9000.0, i: 0.1, d: 500.0}
     #   l_joint_2:    {p: 9000.0, i: 0.1, d: 500.0}
@@ -146,7 +144,7 @@ mobile_dual_arm:
       l_joint_5:    {p: 600.0, i: 0.1, d: 40.0}
       l_joint_6:    {p: 600.0, i: 0.1, d: 40.0}
       l_joint_7:    {p: 600.0, i: 0.1, d: 40.0}
-      l_tool_joint: {p: 600.0, i: 0.1, d: 40.0}
+      #l_tool_joint: {p: 600.0, i: 0.1, d: 40.0}
       joint_left:   {p: 8000.0, i: 0.1, d: 500}
 # mobile_dual_arm/gazebo_ros_control/pid_gains:
 #       r_joint_1:    {p: 9000.0, i: 0.1, d: 500.0}

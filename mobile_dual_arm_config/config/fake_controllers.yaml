@@ -9,7 +9,6 @@ controller_list:
       - r_joint_5
       - r_joint_6
       - r_joint_7
-      - r_tool_joint
   - name: fake_left_arm_controller
     joints:
       - joint_left
@@ -20,7 +19,6 @@ controller_list:
       - l_joint_5
       - l_joint_6
       - l_joint_7
-      - l_tool_joint
 initial:  # Define initial robot poses.
   - group: right_arm
     pose: right_home

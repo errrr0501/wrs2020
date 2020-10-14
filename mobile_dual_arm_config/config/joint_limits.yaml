@@ -53,11 +53,6 @@ joint_limits:
     max_velocity: 6.5
     has_acceleration_limits: false
     max_acceleration: 0
-  l_tool_joint:
-    has_velocity_limits: true
-    max_velocity: 6.5
-    has_acceleration_limits: false
-    max_acceleration: 0
   r_joint_1:
     has_velocity_limits: true
     max_velocity: 6.5
@@ -89,11 +84,6 @@ joint_limits:
     has_acceleration_limits: false
     max_acceleration: 0
   r_joint_7:
-    has_velocity_limits: true
-    max_velocity: 6.5
-    has_acceleration_limits: false
-    max_acceleration: 0
-  r_tool_joint:
     has_velocity_limits: true
     max_velocity: 6.5
     has_acceleration_limits: false
