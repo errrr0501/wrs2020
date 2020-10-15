@@ -9,7 +9,7 @@
   <!-- <xacro:include filename="$(find slide_rail)/urdf/slide_rail.xacro" /> -->
   <xacro:include filename="$(find suction_urdf)/urdf/suction_urdf.xacro" />
   <!--xacro:include filename="$(find single_arm_description)/urdf/materials.xacro" /-->
-  <xacro:include filename="$(find mobile_dual_arm)/urdf/mobile_dual_arm.gazebo" />
+  <xacro:include filename="$(find mobile_dual_arm)/urdf/mobile_dual_arm_notool.gazebo" />
   <!--xacro:include filename="$(find mobile_table)/urdf/mobile_table.xacro" /-->
   <xacro:include filename="$(find mobile_dual_arm)/urdf/shelf.xarco" />
   <xacro:include filename="$(find mobile_dual_arm)/urdf/shelf1.xarco" />
@@ -67,7 +67,6 @@
   <xacro:suction side="l"  parent="l_Link_6">
     <origin xyz="0 0.016 0" rpy="0 0 1.57" />
   </xacro:suction>
-
   <!-- <link name= "r_tool_link"/>
   <xacro:single_arm side="r"  parent="slide_right" child="r_tool_link" toolrot="-1.57">
     <origin xyz="0.0 0.1151 0.0" rpy="1.57 3.1415926 3.1415926" />
