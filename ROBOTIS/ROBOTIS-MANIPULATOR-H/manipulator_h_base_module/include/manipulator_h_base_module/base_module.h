@@ -128,7 +128,7 @@ public:
   void kinematicsPoseMsgCallback(const manipulator_h_base_module_msgs::KinematicsPose::ConstPtr& msg);
   void p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);   //new
   void moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);
-  void moveitClient(std::vector<double> moveit_goal);
+  void moveitClient(std::vector<double> moveit_goal,moveit_msgs::MoveGroupResult &Result);
 
   bool getJointPoseCallback(manipulator_h_base_module_msgs::GetJointPose::Request &req,
                             manipulator_h_base_module_msgs::GetJointPose::Response &res);

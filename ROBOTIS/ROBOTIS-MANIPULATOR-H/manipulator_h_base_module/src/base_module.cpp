@@ -419,7 +419,7 @@ void BaseModule::p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPos
   return;
 }
 //=================================================================================================
-void BaseModule::moveitClient(std::vector<double> moveit_goal){
+void BaseModule::moveitClient(std::vector<double> moveit_goal,moveit_msgs::MoveGroupResult &Result){
 
 
   actionlib::SimpleActionClient<moveit_msgs::MoveGroupAction> move_action_client_("/move_group");
@@ -438,8 +438,7 @@ void BaseModule::moveitClient(std::vector<double> moveit_goal){
   moveit_msgs::MoveGroupGoal goal;
   moveit_msgs::JointConstraint jc;
   moveit_msgs::Constraints ct;
-  moveit_msgs::MoveGroupResult Result;
-  // char joint_left="joint_left";
+  //moveit_msgs::MoveGroupResult Result;
 
   goal.request.workspace_parameters.header.frame_id= "world";
   goal.request.workspace_parameters.min_corner.x= -1;
@@ -495,6 +494,12 @@ void BaseModule::moveitClient(std::vector<double> moveit_goal){
     actionlib::SimpleClientGoalState state = move_action_client_.getState();
     ROS_INFO("Action finished: %s",state.toString().c_str());
     Result = *move_action_client_.getResult();
+    // int j = 0;
+    // int k = Result.planned_trajectory.joint_trajectory.points.size();
+    // for(int i =0;i<k;i++){
+    //   for(j=0;j<8;j++)
+    //     moveit_position.push_back(double(Result.planned_trajectory.joint_trajectory.points[i].positions[j]));
+    // }
     //std::cout<<k<<std::endl;
     return;
   }
@@ -515,6 +520,8 @@ void BaseModule::moveitClient(std::vector<double> moveit_goal){
 }
 void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg)
 {
+  moveit_msgs::MoveGroupResult Result;
+  std::vector<double> moveit_goal;
   std::cout<<"asdfasdfasdf"<<std::endl;
   if (enable_ == false)
     return;
@@ -557,48 +564,101 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
                                                             p2p_positoin, p2p_rotation, p2p_phi, slide_->goal_slide_pos, true);
   if (ik_success == true && slide_success == true)
   {  
-    std::vector<double> moveit_goal;
-    moveit_goal.push_back(slide_->goal_slide_pos);
-    for (int i=1;i<8;i++)
-      moveit_goal.push_back(manipulator_->manipulator_link_data_[i]->joint_angle_);
-    
-    moveitClient(moveit_goal);
-    ROS_INFO("Action Sending Back All Result.");
-    int j = 0;
-    int k = Result.planned_trajectory.joint_trajectory.points.size();
-
-    for(int i = 0;i<k;i++){
+    if (robotis_->is_moving_ == false)
+    {
+      manipulator_h_base_module_msgs::JointPose p2p_msg;
+      moveit_goal.push_back(slide_->goal_slide_pos);
+      for (int i=1;i<8;i++)
+        moveit_goal.push_back(manipulator_->manipulator_link_data_[i]->joint_angle_);
       
+      moveitClient(moveit_goal,Result);
+      ROS_INFO("Action Sending Back All Result.");
+      boost::this_thread::sleep(boost::posix_time::seconds(2)); 
+      int j = 0;
+      int k = Result.planned_trajectory.joint_trajectory.points.size();
+      std::cout<<"+++++++++++++++++"<<k<<"+++++++++++++++++++"<<std::endl;
       for ( int id = 1; id <= MAX_JOINT_ID; id++ )
-      {
         p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
-        p2p_msg.value.push_back(manipulator_->manipulator_link_data_[id]->joint_angle_);
+      for(int i = 0;i<k;i++){
+        // for ( int id = 1; id <= MAX_JOINT_ID; id++ )
+        // {
+        //   // p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
+        //   // p2p_msg.value.push_back(manipulator_->manipulator_link_data_[id]->joint_angle_);
+        //   //std::cout<<"++++++"<<double(Result.planned_trajectory.joint_trajectory.points[i].positions[id])<<"======="<<std::endl;
+        //   p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
+        //   p2p_msg.value.push_back(double(Result.planned_trajectory.joint_trajectory.points[i].positions[id]));
+        //   std::cout<<"++++++++"<<p2p_msg.value[id]<<"+++++++"<<std::endl;
+        // }
+        // // p2p_msg.slide_pos = slide_->goal_slide_pos;
+        // p2p_msg.slide_pos = double(Result.planned_trajectory.joint_trajectory.points[i].positions[0]);
+        // p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
+        // robotis_->joint_pose_msg_ = p2p_msg;
+
+        // tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
+        // delete tra_gene_thread_;
+        // if (robotis_->is_moving_ == false)
+        // {
+          // for ( int id = 1; id <= MAX_JOINT_ID; id++ )
+          //   {
+          for ( int j = 1; j <8; j++ )
+            {
+              // p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
+              // p2p_msg.value.push_back(manipulator_->manipulator_link_data_[id]->joint_angle_);
+              //std::cout<<"++++++"<<double(Result.planned_trajectory.joint_trajectory.points[i].positions[id])<<"======="<<std::endl;
+              // p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
+              p2p_msg.value.push_back(float(Result.planned_trajectory.joint_trajectory.points[i].positions[j]));
+              //std::cout<<"++++++++"<<"ppppppp"<<"+++++++"<<std::endl;
+              // p2p_msg.slide_pos = double(Result.planned_trajectory.joint_trajectory.points[i].positions[0]);
+              // p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
+              // robotis_->joint_pose_msg_ = p2p_msg;
+              // tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
+              // delete tra_gene_thread_;
+            }
+            // for(int j = 0 ;j<7;j++)
+              // std::cout<<"++++++++"<<p2p_msg.value[j]<<"+++++++"<<std::endl;
+            // for(int j = 0 ;j<8;j++)
+              // std::cout<<"++++++++"<<Result.planned_trajectory.joint_trajectory.points[i].positions[j]<<std::endl;
+          //p2p_msg.slide_pos = slide_->goal_slide_pos;
+          p2p_msg.slide_pos = float(Result.planned_trajectory.joint_trajectory.points[i].positions[0]);
+          p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
+          robotis_->joint_pose_msg_ = p2p_msg;
+          generateJointTrajProcess();
+          // std::cout<<"+++++++++++"<<&tra_gene_thread_<<"++++++++++++++++"<<std::endl;
+          // std::cout<<"+++++++++++"<<robotis_<<"++++++++++++++++"<<std::endl;
+          // delete tra_gene_thread_;
+
+
+          //need to clear vector or value can't be push back
+          p2p_msg.value.clear();
+          for(int j = 1 ;j<8;j++)
+            std::cout<<robotis_->calc_joint_tra_.block(0, i, robotis_->all_time_steps_, 1)<<std::endl;
+
+
+
+          //   std::vector<double> moveit_position;
+       
+          //   for (int i = 0; i < k; i++)
+          //   {
+          //     for (j=0;j<8;j++){
+          //       // std::cout<<j<<std::endl;
+          //       robotis_.push_back
+          //     }      
+          //   }
+          //   //get moviet goal position per time into 
+          //   // robotis_->calc_joint_tra_.block(0, id, robotis_->all_time_steps_, 1) = tra;
+          //   // robotis_->cnt_ = 0;
+          //   // robotis_->is_moving_ = true;
+        // }
       }
-      p2p_msg.slide_pos = slide_->goal_slide_pos;
-      p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
-      robotis_->joint_pose_msg_ = p2p_msg;
-      if (robotis_->is_moving_ == false)
-      {
-        std::vector<double> moveit_position;
-  
-        for (int i = 0; i < k; i++)
-        {
-          for (j=0;j<8;j++){
-            // std::cout<<j<<std::endl;
-            robotis_.push_back(double(Result.planned_trajectory.joint_trajectory.points[i].positions[j]));
-          }      
-        }
-        //get moviet goal position per time into 
-        // robotis_->calc_joint_tra_.block(0, id, robotis_->all_time_steps_, 1) = tra;
-        // robotis_->cnt_ = 0;
-        // robotis_->is_moving_ = true;
-      }
-      
-      else
-      {
-        ROS_INFO("previous task is alive");
-      }
+      robotis_->cnt_ = 0;
+      robotis_->is_moving_ = true;
+
+    } 
+    else
+    {
+      ROS_INFO("previous task is alive");
     }
+    
   }
   else
   {
@@ -608,9 +668,9 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
   }
   robotis_->is_ik = false;
   return;
+  
 }
-// =======================================================================================================================
-
+//=================================================================================================================
 void BaseModule::jointPoseMsgCallback(const manipulator_h_base_module_msgs::JointPose::ConstPtr& msg)
 {
   if (enable_ == false)
@@ -728,8 +788,8 @@ void BaseModule::generateJointTrajProcess()
   slide_->goal_slide_pos = robotis_->joint_pose_msg_.slide_pos;
   generateSlideTrajProcess();
 
-  robotis_->cnt_ = 0;
-  robotis_->is_moving_ = true;
+  // robotis_->cnt_ = 0;
+  // robotis_->is_moving_ = true;
 
   ROS_INFO("[start] send trajectory");
   publishStatusMsg(robotis_controller_msgs::StatusMsg::STATUS_INFO, "Start Trajectory");
@@ -864,7 +924,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     //std::cout<<current_now<<","<<current_offset<<std::endl;
     bias_pos = std::abs((diff_curr_goal_now - curr_goal_offset)*100000);
     bias_cur = std::abs((current_now - current_offset)*10);
-    std::cout<<bias_cur<<std::endl;
+    // std::cout<<bias_cur<<std::endl;
 
     if(bias_pos >= 100)
     {
