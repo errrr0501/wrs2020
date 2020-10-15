@@ -403,6 +403,8 @@ void BaseModule::p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPos
     {
       tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
       delete tra_gene_thread_;
+      robotis_->cnt_ = 0;
+      robotis_->is_moving_ = true;
     }
     else
     {
@@ -522,6 +524,10 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
 {
   moveit_msgs::MoveGroupResult Result;
   std::vector<double> moveit_goal;
+  Eigen::MatrixXd tra_points;
+
+
+
   std::cout<<"asdfasdfasdf"<<std::endl;
   if (enable_ == false)
     return;
@@ -579,80 +585,68 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
       std::cout<<"+++++++++++++++++"<<k<<"+++++++++++++++++++"<<std::endl;
       for ( int id = 1; id <= MAX_JOINT_ID; id++ )
         p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
-      for(int i = 0;i<k;i++){
-        // for ( int id = 1; id <= MAX_JOINT_ID; id++ )
-        // {
-        //   // p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
-        //   // p2p_msg.value.push_back(manipulator_->manipulator_link_data_[id]->joint_angle_);
-        //   //std::cout<<"++++++"<<double(Result.planned_trajectory.joint_trajectory.points[i].positions[id])<<"======="<<std::endl;
-        //   p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
-        //   p2p_msg.value.push_back(double(Result.planned_trajectory.joint_trajectory.points[i].positions[id]));
-        //   std::cout<<"++++++++"<<p2p_msg.value[id]<<"+++++++"<<std::endl;
-        // }
-        // // p2p_msg.slide_pos = slide_->goal_slide_pos;
-        // p2p_msg.slide_pos = double(Result.planned_trajectory.joint_trajectory.points[i].positions[0]);
-        // p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
-        // robotis_->joint_pose_msg_ = p2p_msg;
-
-        // tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
-        // delete tra_gene_thread_;
-        // if (robotis_->is_moving_ == false)
-        // {
+      if (robotis_->is_moving_ == false){
+        for(int i = 0;i<k;i++){
           // for ( int id = 1; id <= MAX_JOINT_ID; id++ )
-          //   {
-          for ( int j = 1; j <8; j++ )
-            {
-              // p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
-              // p2p_msg.value.push_back(manipulator_->manipulator_link_data_[id]->joint_angle_);
-              //std::cout<<"++++++"<<double(Result.planned_trajectory.joint_trajectory.points[i].positions[id])<<"======="<<std::endl;
-              // p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
-              p2p_msg.value.push_back(float(Result.planned_trajectory.joint_trajectory.points[i].positions[j]));
-              //std::cout<<"++++++++"<<"ppppppp"<<"+++++++"<<std::endl;
-              // p2p_msg.slide_pos = double(Result.planned_trajectory.joint_trajectory.points[i].positions[0]);
-              // p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
-              // robotis_->joint_pose_msg_ = p2p_msg;
-              // tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
-              // delete tra_gene_thread_;
-            }
-            // for(int j = 0 ;j<7;j++)
-              // std::cout<<"++++++++"<<p2p_msg.value[j]<<"+++++++"<<std::endl;
-            // for(int j = 0 ;j<8;j++)
-              // std::cout<<"++++++++"<<Result.planned_trajectory.joint_trajectory.points[i].positions[j]<<std::endl;
-          //p2p_msg.slide_pos = slide_->goal_slide_pos;
-          p2p_msg.slide_pos = float(Result.planned_trajectory.joint_trajectory.points[i].positions[0]);
-          p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
-          robotis_->joint_pose_msg_ = p2p_msg;
-          generateJointTrajProcess();
-          // std::cout<<"+++++++++++"<<&tra_gene_thread_<<"++++++++++++++++"<<std::endl;
-          // std::cout<<"+++++++++++"<<robotis_<<"++++++++++++++++"<<std::endl;
+          // {
+          //   // p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
+          //   // p2p_msg.value.push_back(manipulator_->manipulator_link_data_[id]->joint_angle_);
+          //   //std::cout<<"++++++"<<double(Result.planned_trajectory.joint_trajectory.points[i].positions[id])<<"======="<<std::endl;
+          //   p2p_msg.name.push_back(manipulator_->manipulator_link_data_[id]->name_);
+          //   p2p_msg.value.push_back(double(Result.planned_trajectory.joint_trajectory.points[i].positions[id]));
+          //   std::cout<<"++++++++"<<p2p_msg.value[id]<<"+++++++"<<std::endl;
+          // }
+          // // p2p_msg.slide_pos = slide_->goal_slide_pos;
+          // p2p_msg.slide_pos = double(Result.planned_trajectory.joint_trajectory.points[i].positions[0]);
+          // p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
+          // robotis_->joint_pose_msg_ = p2p_msg;
+  
+          // tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
           // delete tra_gene_thread_;
-
-
-          //need to clear vector or value can't be push back
-          p2p_msg.value.clear();
-          for(int j = 1 ;j<8;j++)
-            std::cout<<robotis_->calc_joint_tra_.block(0, i, robotis_->all_time_steps_, 1)<<std::endl;
-
-
-
-          //   std::vector<double> moveit_position;
-       
-          //   for (int i = 0; i < k; i++)
-          //   {
-          //     for (j=0;j<8;j++){
-          //       // std::cout<<j<<std::endl;
-          //       robotis_.push_back
-          //     }      
-          //   }
-          //   //get moviet goal position per time into 
-          //   // robotis_->calc_joint_tra_.block(0, id, robotis_->all_time_steps_, 1) = tra;
-          //   // robotis_->cnt_ = 0;
-          //   // robotis_->is_moving_ = true;
-        // }
+          // if (robotis_->is_moving_ == false)
+          // {
+            // for ( int id = 1; id <= MAX_JOINT_ID; id++ )
+            //   {
+            for ( int j = 1; j <8; j++ )
+              {
+  
+                p2p_msg.value.push_back(Result.planned_trajectory.joint_trajectory.points[i].positions[j]);
+                // p2p_msg.slide_pos = double(Result.planned_trajectory.joint_trajectory.points[i].positions[0]);
+                // p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
+                // robotis_->joint_pose_msg_ = p2p_msg;
+                // tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
+                // delete tra_gene_thread_;
+              }
+              // for(int j = 0 ;j<7;j++)
+                // std::cout<<"++++++++"<<p2p_msg.value[j]<<"+++++++"<<std::endl;
+              // for(int j = 0 ;j<8;j++)
+                // std::cout<<"++++++++"<<Result.planned_trajectory.joint_trajectory.points[i].positions[j]<<std::endl;
+            //p2p_msg.slide_pos = slide_->goal_slide_pos;
+            p2p_msg.slide_pos = Result.planned_trajectory.joint_trajectory.points[i].positions[0];
+            p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
+            robotis_->joint_pose_msg_ = p2p_msg;
+            generateJointTrajProcess();
+            // std::cout<<"+++++++++++"<<&tra_gene_thread_<<"++++++++++++++++"<<std::endl;
+            // std::cout<<"+++++++++++"<<robotis_<<"++++++++++++++++"<<std::endl;
+            // delete tra_gene_thread_;
+  
+  
+            //need to clear vector or value can't be push back
+            p2p_msg.value.clear();
+            robotis_->cnt_ = 0;
+            robotis_->is_moving_ = true;
+            if (robotis_->is_moving_ == false)
+              robotis_->is_moving_ = false;
+            // tra_points<<robotis_->calc_joint_tra_.block(0, i, robotis_->all_time_steps_, 1);
+            // delete robotis_->calc_joint_tra_;
+            // for(int j = 1 ;j<8;j++)
+            //     std::cout<<"++++++++"<<tra_points<<"+++++++"<<std::endl;
+              // std::cout<<robotis_->calc_joint_tra_.block(0, i, robotis_->all_time_steps_, 1)<<std::endl;
+        }
+        // robotis_->calc_joint_tra_=tra_points;
+        // robotis_->cnt_ = 0;
+        // robotis_->is_moving_ = true;
       }
-      robotis_->cnt_ = 0;
-      robotis_->is_moving_ = true;
-
     } 
     else
     {
@@ -926,11 +920,11 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     bias_cur = std::abs((current_now - current_offset)*10);
     // std::cout<<bias_cur<<std::endl;
 
-    if(bias_pos >= 100)
-    {
-      std::cout<<"====== alart! Robot hit something! ======"<<std::endl;
-      stop();
-    }
+    // if(bias_pos >= 100)
+    // {
+    //   std::cout<<"====== alart! Robot hit something! ======"<<std::endl;
+    //   stop();
+    // }
 
     curr_goal_offset = diff_curr_goal_now;
     current_offset   = current_now;
