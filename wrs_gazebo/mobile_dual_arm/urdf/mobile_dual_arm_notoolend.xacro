@@ -7,7 +7,7 @@
   <xacro:include filename="$(find single_arm_description)/urdf/single_arm.xacro" />
   <xacro:include filename="$(find timda_body)/urdf/timda_body.xacro" />
   <!-- <xacro:include filename="$(find slide_rail)/urdf/slide_rail.xacro" /> -->
-  <xacro:include filename="$(find suction_urdf)/urdf/suction_urdf.xacro" />
+  <xacro:include filename="$(find suction_urdf)/urdf/suction_urdf_no_tool_end.xacro" />
   <!--xacro:include filename="$(find single_arm_description)/urdf/materials.xacro" /-->
   <xacro:include filename="$(find mobile_dual_arm)/urdf/mobile_dual_arm.gazebo" />
   <!--xacro:include filename="$(find mobile_table)/urdf/mobile_table.xacro" /-->

@@ -43,17 +43,19 @@
 #include <moveit/kinematic_constraints/utils.h>
 #include <moveit/utils/message_checks.h>
 #include <moveit/move_group/capability_names.h>
+//#include "manipulator_h_base_module/base_module.h"
 
-// #include "ros/ros.h"          // 加入ROS公用程序
-// #include "std_msgs/String.h"  // 所要publish的message header，在此是std_msgs package底下的String.msg
+
+#include "ros/ros.h"          
+#include "std_msgs/String.h"  
 // #include <sstream>
+
 namespace move_group
 {
 MoveGroupMoveAction::MoveGroupMoveAction()
   : MoveGroupCapability("MoveAction"), move_state_(IDLE), preempt_requested_{ false }
 {
 }
-
 void MoveGroupMoveAction::initialize()
 {
   // start the move action server
@@ -65,15 +67,12 @@ void MoveGroupMoveAction::initialize()
 
 void MoveGroupMoveAction::executeMoveCallback(const moveit_msgs::MoveGroupGoalConstPtr& goal)
 {
-
-  // ros::init(argc, argv, "moveit_joint_result");  
-
-  // ros::NodeHandle n;     
   setMoveState(PLANNING);
   // before we start planning, ensure that we have the latest robot state received...
   context_->planning_scene_monitor_->waitForCurrentRobotState(ros::Time::now());
   context_->planning_scene_monitor_->updateFrameTransforms();
-
+  
+  // std::cout<<"-----------------------"<<*goal<<"--------------------"<<std::endl;
   moveit_msgs::MoveGroupResult action_res;
   if (goal->planning_options.plan_only || !context_->allow_trajectory_execution_)
   {
@@ -84,14 +83,12 @@ void MoveGroupMoveAction::executeMoveCallback(const moveit_msgs::MoveGroupGoalCo
     executeMoveCallbackPlanOnly(goal, action_res);
   }
   else
-    //std::cout<<"-----------------------"<<*goal<<"--------------------"<<std::endl;
     executeMoveCallbackPlanAndExecute(goal, action_res);
-    //std::cout<<"-----------------------"<<action_res.planned_trajectory<<"--------------------"<<std::endl;
-    //std::cout<<"---"<<action_res.planned_trajectory.joint_trajectory.points[1].positions[0]<<"---"<<std::endl;
-
+    
   bool planned_trajectory_empty = trajectory_processing::isTrajectoryEmpty(action_res.planned_trajectory);
   std::string response =
       getActionResultString(action_res.error_code, planned_trajectory_empty, goal->planning_options.plan_only);
+  
   if (action_res.error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
     move_action_server_->setSucceeded(action_res, response);  
   else
@@ -105,6 +102,7 @@ void MoveGroupMoveAction::executeMoveCallback(const moveit_msgs::MoveGroupGoalCo
   setMoveState(IDLE);
 
   preempt_requested_ = false;
+
 }
 
 void MoveGroupMoveAction::executeMoveCallbackPlanAndExecute(const moveit_msgs::MoveGroupGoalConstPtr& goal,
@@ -112,12 +110,11 @@ void MoveGroupMoveAction::executeMoveCallbackPlanAndExecute(const moveit_msgs::M
 {
   ROS_INFO_NAMED(getName(), "Combined planning and execution request received for MoveGroup action. "
                             "Forwarding to planning and execution pipeline.");
-
   if (moveit::core::isEmpty(goal->planning_options.planning_scene_diff))
   {
     planning_scene_monitor::LockedPlanningSceneRO lscene(context_->planning_scene_monitor_);
     const moveit::core::RobotState& current_state = lscene->getCurrentState();
-
+  
     // check to see if the desired constraints are already met
     for (std::size_t i = 0; i < goal->request.goal_constraints.size(); ++i)
       if (lscene->isStateConstrained(current_state,

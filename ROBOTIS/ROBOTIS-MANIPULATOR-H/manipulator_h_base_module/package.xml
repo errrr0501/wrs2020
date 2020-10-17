@@ -31,4 +31,6 @@
   <depend>boost</depend>
   <depend>eigen</depend>
   <depend>yaml-cpp</depend>
+  <depend>moveit_msgs</depend>
+  <depend>actionlib</depend>
 </package>
