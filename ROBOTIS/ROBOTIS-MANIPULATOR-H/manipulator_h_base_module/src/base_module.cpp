@@ -729,28 +729,34 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
 
   if(robotis_->is_moving_ == true && timer1 >= 4)
   {
-    diff_curr_goal_now[1] = joint_state_->goal_joint_state_[1].position_ - joint_state_->curr_joint_state_[1].position_;
+    //read the first two motor's position & current
+    //diff_curr_goal_now[1] = joint_state_->goal_joint_state_[1].position_ - joint_state_->curr_joint_state_[1].position_;
+    //diff_curr_goal_now[1] = joint_state_->curr_joint_state_[1].position_;
     current_now[1]        = joint_state_->curr_joint_state_[1].effort_;
 
-    diff_curr_goal_now[2] = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
+    //diff_curr_goal_now[2] = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
+    //diff_curr_goal_now[2] = joint_state_->curr_joint_state_[2].position_;
     current_now[2]        = joint_state_->curr_joint_state_[2].effort_;
 
-    //std::cout<<current_now<<","<<current_offset<<std::endl;
-    bias_pos[1] = std::abs((diff_curr_goal_now[1] - curr_goal_offset[1])*100000);
+    //calculatie bias
+    //bias_pos[1] = std::abs((diff_curr_goal_now[1] - curr_goal_offset[1])*100000);
     bias_cur[1] = std::abs((current_now[1] - current_offset[1])*10);
 
-    bias_pos[2] = std::abs((diff_curr_goal_now[2] - curr_goal_offset[2])*100000);
+    //bias_pos[2] = std::abs((diff_curr_goal_now[2] - curr_goal_offset[2])*100000);
     bias_cur[2] = std::abs((current_now[2] - current_offset[2])*10);
 
-    std::cout<<bias_pos[2]<<","<<bias_cur[2]<<std::endl;
+    std::cout<<bias_cur[2]<<std::endl;
 
-    if(bias_pos[1] >= 300 && bias_cur[1] >= 100)
+    //if motor1 hits something
+    double joint_speed = robotis_->joint_pose_msg_.speed;
+    if(bias_cur[1] >= (joint_speed)*10)  //bias_pos[1] >= 300 && bias_cur[1] >= 100
     {
       if_hit[1]++;
       if(detect_hit[1] == 0)
       {
         detect_hit[1]++;
         std::cout<<"???[1]"<<std::endl;
+        std::cout<<joint_speed<<std::endl;
       }
       if(if_hit[1] >= 2)
       {
@@ -759,8 +765,8 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
         if_hit[1] = 0;      
       }
     }
-
-    if(bias_pos[2] >= 100 && bias_cur[2] >= 85)
+    //if motor2 hits something
+    if(bias_cur[2] >= (joint_speed)*5+50)  //bias_pos[2] >= 100 && bias_cur[2] >= 85  //(joint_speed)*5+150)
     {
       if_hit[2]++;
       if(detect_hit[2] == 0)
@@ -775,33 +781,37 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
         if_hit[2] = 0;      
       }
     }
-
-    curr_goal_offset[1] = diff_curr_goal_now[1];
+    //store previous position & current
+    //curr_goal_offset[1] = diff_curr_goal_now[1];
     current_offset[1]   = current_now[1];
 
-    curr_goal_offset[2] = diff_curr_goal_now[2];
+    //curr_goal_offset[2] = diff_curr_goal_now[2];
     current_offset[2]   = current_now[2]; 
 
-    timer1 = 0;
-
+    //give motor1 time to detect impact
     if(detect_hit[1]>0)
     {
       detect_hit[1]++;  
+      //if the is no impact within time, reset status 
       if(detect_hit[1] >= 5)
       {
         if_hit[1] = 0;
         detect_hit[1] = 0;
       }    
     }
+    //give motor1 time to detect impact
     if(detect_hit[2]>0)
     {
       detect_hit[2]++; 
+      //if the is no impact within time, reset status 
       if(detect_hit[2] >= 5)
       {
         if_hit[2] = 0;
         detect_hit[2] = 0;
       }        
     }
+
+    timer1 = 0;
   }
   timer1++;
   
