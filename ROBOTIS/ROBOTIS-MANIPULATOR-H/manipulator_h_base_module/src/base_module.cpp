@@ -948,8 +948,8 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       }        
     }
     //std::cout<<current_now<<","<<current_offset<<std::endl;
-    bias_pos = std::abs((diff_curr_goal_now - curr_goal_offset)*100000);
-    bias_cur = std::abs((current_now - current_offset)*10);
+    // bias_pos = std::abs((diff_curr_goal_now - curr_goal_offset)*100000);
+    // bias_cur = std::abs((current_now - current_offset)*10);
     // std::cout<<bias_cur<<std::endl;
 
     // if(bias_pos >= 100)
