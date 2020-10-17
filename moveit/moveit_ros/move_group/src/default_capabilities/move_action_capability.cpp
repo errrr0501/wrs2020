@@ -64,20 +64,7 @@ void MoveGroupMoveAction::initialize()
   move_action_server_->registerPreemptCallback(boost::bind(&MoveGroupMoveAction::preemptMoveCallback, this));
   move_action_server_->start();
 }
-// bool MoveGroupMoveAction::moveitServer(std::vector<double> moveit_position){
-//   ////////////////////server//////////////////////////////
 
-//   ros::init(argc,argv, "moveit_goal_server");
-//   ros::NodeHandle n;
-
-//   res.moveit_position = moveit_position;
-//   ros::ServiceServer service = n.advertiseService("moveit_goal", callback);
-//   //////////////////////////////////////////////////////////////////////
-//   executeMoveCallback
-
-//   return;
-
-// }
 void MoveGroupMoveAction::executeMoveCallback(const moveit_msgs::MoveGroupGoalConstPtr& goal)
 {
   setMoveState(PLANNING);
@@ -85,7 +72,7 @@ void MoveGroupMoveAction::executeMoveCallback(const moveit_msgs::MoveGroupGoalCo
   context_->planning_scene_monitor_->waitForCurrentRobotState(ros::Time::now());
   context_->planning_scene_monitor_->updateFrameTransforms();
   
-  std::cout<<"-----------------------"<<*goal<<"--------------------"<<std::endl;
+  // std::cout<<"-----------------------"<<*goal<<"--------------------"<<std::endl;
   moveit_msgs::MoveGroupResult action_res;
   if (goal->planning_options.plan_only || !context_->allow_trajectory_execution_)
   {
@@ -97,8 +84,7 @@ void MoveGroupMoveAction::executeMoveCallback(const moveit_msgs::MoveGroupGoalCo
   }
   else
     executeMoveCallbackPlanAndExecute(goal, action_res);
-    //std::cout<<"-----------------------"<<action_res.planned_trajectory<<"--------------------"<<std::endl;
-    //std::cout<<"---"<<action_res.planned_trajectory.joint_trajectory.points[1].positions[0]<<"---"<<std::endl;    
+    
   bool planned_trajectory_empty = trajectory_processing::isTrajectoryEmpty(action_res.planned_trajectory);
   std::string response =
       getActionResultString(action_res.error_code, planned_trajectory_empty, goal->planning_options.plan_only);
