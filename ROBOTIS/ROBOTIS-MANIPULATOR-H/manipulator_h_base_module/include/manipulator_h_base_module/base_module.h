@@ -60,8 +60,10 @@
 #include <actionlib/client/terminal_state.h>
 #include "manipulator_h_base_module_msgs/SendGoal.h"
 #include "moveit_msgs/MoveGroupAction.h"
-//#include </home/errrr/dual_arm_ws/devel/include/moveit_msgs/MoveGroupAction.h>
 
+#include <mutex>           
+#include <thread>    
+#include <condition_variable>  
 
 
 

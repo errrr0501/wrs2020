@@ -81,7 +81,6 @@ Eigen::MatrixXd calcMinimumJerkTra(
         poly_coeff.coeff(1,0)*pow(time.coeff(step,0),4) +
         poly_coeff.coeff(2,0)*pow(time.coeff(step,0),5);
   }
-
   return minimum_jerk_tra;
 }
 
