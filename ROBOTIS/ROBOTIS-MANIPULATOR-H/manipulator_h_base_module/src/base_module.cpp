@@ -22,6 +22,7 @@
  */
 
 #include <stdio.h>
+#include <vector>
 
 #include "manipulator_h_base_module/base_module.h"
 
@@ -38,8 +39,9 @@ double bias_cur[MAX_JOINT_ID+1] = {0};
 int if_hit[MAX_JOINT_ID+1] = {0};
 int detect_hit[MAX_JOINT_ID+1] = {0};
 int timer1 = 0;
-
-
+bool init_var = false;
+double avg_cur[7] = {0};
+double avg_cur1,avg_cur2 = 0;
 
 
 BaseModule::BaseModule()
@@ -203,6 +205,7 @@ void BaseModule::initPoseMsgCallback(const std_msgs::String::ConstPtr& msg)
   {
     if (msg->data == "ini_pose")
     {
+      init_var = true;
       // parse initial pose
       std::string ini_pose_path = ros::package::getPath("manipulator_h_base_module") + "/config/ini_pose.yaml";
       parseIniPoseData(ini_pose_path);
@@ -727,6 +730,10 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     joint_state_->goal_joint_state_[joint_name_to_id_[joint_name]].position_ = joint_goal_position;
   }
 
+
+  avg_cur[0] += bias_cur[1];
+  avg_cur[1] += bias_cur[2];
+
   if(robotis_->is_moving_ == true && timer1 >= 4)
   {
     //read the first two motor's position & current
@@ -745,11 +752,13 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     //bias_pos[2] = std::abs((diff_curr_goal_now[2] - curr_goal_offset[2])*100000);
     bias_cur[2] = std::abs((current_now[2] - current_offset[2])*10);
 
-    std::cout<<bias_cur[2]<<std::endl;
+    std::cout<<avg_cur1<<":"<<avg_cur2<<std::endl;
+    std::cout<<bias_cur[1]<<","<<bias_cur[2]<<std::endl;
 
     //if motor1 hits something
     double joint_speed = robotis_->joint_pose_msg_.speed;
-    if(bias_cur[1] >= (joint_speed)*10)  //bias_pos[1] >= 300 && bias_cur[1] >= 100
+
+    if(bias_cur[1] >= (avg_cur1+50) && init_var != true)  //bias_pos[1] >= 300 && bias_cur[1] >= 100 (joint_speed)*10
     {
       if_hit[1]++;
       if(detect_hit[1] == 0)
@@ -766,7 +775,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       }
     }
     //if motor2 hits something
-    if(bias_cur[2] >= (joint_speed)*5+50)  //bias_pos[2] >= 100 && bias_cur[2] >= 85  //(joint_speed)*5+150)
+    if(bias_cur[2] >= (avg_cur2+50) && init_var != true)  //bias_pos[2] >= 100 && bias_cur[2] >= 85  //(joint_speed)*5+150) (joint_speed)*5+50
     {
       if_hit[2]++;
       if(detect_hit[2] == 0)
@@ -811,7 +820,12 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       }        
     }
 
+    avg_cur1 = avg_cur[0]/4;
+    avg_cur2 = avg_cur[1]/4;
+
     timer1 = 0;
+    avg_cur[0] = 0;
+    avg_cur[1] = 0;
   }
   timer1++;
   
@@ -904,6 +918,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
   {
     ROS_INFO("[end] send trajectory");
     publishStatusMsg(robotis_controller_msgs::StatusMsg::STATUS_INFO, "End Trajectory");
+    init_var = false;
 
     // slide_->is_end = true;
     robotis_->is_moving_ = false;
