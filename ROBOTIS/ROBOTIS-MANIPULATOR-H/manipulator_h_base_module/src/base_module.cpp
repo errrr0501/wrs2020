@@ -409,8 +409,6 @@ void BaseModule::p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPos
     {
       tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
       delete tra_gene_thread_;
-      robotis_->cnt_ = 0;
-      robotis_->is_moving_ = true;
     }
     else
     {
