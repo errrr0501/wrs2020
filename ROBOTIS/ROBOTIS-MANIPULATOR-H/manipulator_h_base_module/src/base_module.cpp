@@ -567,7 +567,7 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
       
       moveitClient(moveit_goal,Result);
       ROS_INFO("Action Sending Back All Result.");
-      boost::this_thread::sleep(boost::posix_time::seconds(2)); 
+      // boost::this_thread::sleep(boost::posix_time::seconds(2)); 
       int j = 0;
       int k = Result.planned_trajectory.joint_trajectory.points.size();
       std::cout<<"+++++++++++++++++"<<k<<"+++++++++++++++++++"<<std::endl;
@@ -581,6 +581,8 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
               
             p2p_msg.slide_pos = Result.planned_trajectory.joint_trajectory.points[i].positions[0];
             p2p_msg.speed     = robotis_->p2p_pose_msg_.speed;
+            if (i>0)
+              slide_->slide_pos = Result.planned_trajectory.joint_trajectory.points[i-1].positions[0];
             robotis_->joint_pose_msg_ = p2p_msg;
             std::cout<<"start_Tra"<<std::endl;
             tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::generateJointTrajProcess, this));
@@ -588,7 +590,9 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
             
             robotis_->cnt_ = 0;
             p2p_msg.value.clear();
-
+            // p2p_msg.slide_pos.clear();
+            std::cout<<"-----------------"<<p2p_msg.slide_pos<<"-----------------"<<std::endl;
+            delete tra_gene_thread_;
             //condition_var for lock
             std::unique_lock<std::mutex> lock(mutex);
             cv.wait(lock, [] {return ready; });
