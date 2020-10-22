@@ -589,7 +589,7 @@ void BaseModule::moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2P
             robotis_->cnt_ = 0;
             p2p_msg.value.clear();
             // p2p_msg.slide_pos.clear();
-            std::cout<<"-----------------"<<p2p_msg.slide_pos<<"-----------------"<<std::endl;
+            //std::cout<<"-----------------"<<p2p_msg.slide_pos<<"-----------------"<<std::endl;
             delete tra_gene_thread_;
             //condition_var for lock
             std::unique_lock<std::mutex> lock(mutex);
@@ -884,7 +884,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     //bias_pos[2] = std::abs((diff_curr_goal_now[2] - curr_goal_offset[2])*100000);
     bias_cur[2] = std::abs((current_now[2] - current_offset[2])*10);
 
-    std::cout<<bias_cur[2]<<std::endl;
+    //std::cout<<bias_cur[2]<<std::endl;
 
     //if motor1 hits something
     double joint_speed = robotis_->joint_pose_msg_.speed;
@@ -894,8 +894,8 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       if(detect_hit[1] == 0)
       {
         detect_hit[1]++;
-        std::cout<<"???[1]"<<std::endl;
-        std::cout<<joint_speed<<std::endl;
+        //std::cout<<"???[1]"<<std::endl;
+        //std::cout<<joint_speed<<std::endl;
       }
       if(if_hit[1] >= 2)
       {
@@ -911,7 +911,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       if(detect_hit[2] == 0)
       {
         detect_hit[2]++;
-        std::cout<<"???[2]"<<std::endl;
+        //std::cout<<"???[2]"<<std::endl;
       }
       if(if_hit[2] >= 2)
       {
@@ -1010,10 +1010,10 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
         slide_->result_slide_pos = robotis_->calc_slide_tra_(robotis_->cnt_, 0);
         if(manipulator_->manipulator_link_data_[0]->singularity_ && robotis_->cnt_ > 1)
         {
-          std::cout<<"====robotis_->cnt_====="<<robotis_->cnt_<<" ";
+          //std::cout<<"====robotis_->cnt_====="<<robotis_->cnt_<<" ";
           robotis_->cnt_--;
           // robotis_->cnt_ = (robotis_->cnt_ > 1) ? (robotis_->cnt_-1) : robotis_->cnt_;
-          std::cout<<robotis_->cnt_<<std::endl;
+          //std::cout<<robotis_->cnt_<<std::endl;
         }
           // std::cout<<"==========================process after ik"<<std::endl;
           // manipulator_->forwardKinematics(7);
