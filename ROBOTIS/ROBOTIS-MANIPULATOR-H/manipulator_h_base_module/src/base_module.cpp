@@ -30,12 +30,16 @@ using namespace robotis_manipulator_h;
 
 double diff_curr_goal_now[MAX_JOINT_ID+1] = {0};
 double current_now[MAX_JOINT_ID+1] = {0};
+double vel_now[MAX_JOINT_ID+1] = {0};
 
 double curr_goal_offset[MAX_JOINT_ID+1] = {0};
 double current_offset[MAX_JOINT_ID+1] = {0};
+double vel_offset[MAX_JOINT_ID+1] = {0};
 
 double bias_pos[MAX_JOINT_ID+1] = {0};
 double bias_cur[MAX_JOINT_ID+1] = {0};
+double bias_vel[MAX_JOINT_ID+1] = {0};
+
 int if_hit[MAX_JOINT_ID+1] = {0};
 int detect_hit[MAX_JOINT_ID+1] = {0};
 int timer1 = 0;
@@ -720,12 +724,14 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
 
     double joint_curr_position = dxl->dxl_state_->present_position_;
     double joint_goal_position = dxl->dxl_state_->goal_position_;
-    double joint_curr_current  = dxl->dxl_state_->present_torque_;
+    double joint_current  = dxl->dxl_state_->present_torque_;
+    double joint_vel = dxl->dxl_state_->present_velocity_;
     //std::cout<<"curr: "<<joint_curr_current<<std::endl;
 
 
     joint_state_->curr_joint_state_[joint_name_to_id_[joint_name]].position_ = joint_curr_position;
-    joint_state_->curr_joint_state_[joint_name_to_id_[joint_name]].effort_   = joint_curr_current;
+    joint_state_->curr_joint_state_[joint_name_to_id_[joint_name]].effort_   = joint_current;
+    joint_state_->curr_joint_state_[joint_name_to_id_[joint_name]].velocity_ = joint_vel;
 
     joint_state_->goal_joint_state_[joint_name_to_id_[joint_name]].position_ = joint_goal_position;
   }
@@ -737,23 +743,26 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
   if(robotis_->is_moving_ == true && timer1 >= 4)
   {
     //read the first two motor's position & current
-    //diff_curr_goal_now[1] = joint_state_->goal_joint_state_[1].position_ - joint_state_->curr_joint_state_[1].position_;
+    diff_curr_goal_now[1] = joint_state_->goal_joint_state_[1].position_ - joint_state_->curr_joint_state_[1].position_;
     //diff_curr_goal_now[1] = joint_state_->curr_joint_state_[1].position_;
     current_now[1]        = joint_state_->curr_joint_state_[1].effort_;
+    vel_now[1] = joint_state_->curr_joint_state_[1].velocity_;
 
     //diff_curr_goal_now[2] = joint_state_->goal_joint_state_[2].position_ - joint_state_->curr_joint_state_[2].position_;
     //diff_curr_goal_now[2] = joint_state_->curr_joint_state_[2].position_;
     current_now[2]        = joint_state_->curr_joint_state_[2].effort_;
 
     //calculatie bias
-    //bias_pos[1] = std::abs((diff_curr_goal_now[1] - curr_goal_offset[1])*100000);
+    bias_pos[1] = std::abs((diff_curr_goal_now[1] - curr_goal_offset[1])*100000);
     bias_cur[1] = std::abs((current_now[1] - current_offset[1])*10);
+    bias_vel[1] = std::abs((vel_now[1] - vel_offset[1])*100);
 
     //bias_pos[2] = std::abs((diff_curr_goal_now[2] - curr_goal_offset[2])*100000);
     bias_cur[2] = std::abs((current_now[2] - current_offset[2])*10);
 
-    std::cout<<avg_cur1<<":"<<avg_cur2<<std::endl;
-    std::cout<<bias_cur[1]<<","<<bias_cur[2]<<std::endl;
+    //std::cout<<avg_cur1<<":"<<avg_cur2<<std::endl;
+    //std::cout<<bias_pos[1]<<","<<bias_cur[1]<<std::endl;
+    std::cout<<bias_vel[1]<<std::endl;
 
     //if motor1 hits something
     double joint_speed = robotis_->joint_pose_msg_.speed;
@@ -791,8 +800,9 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       }
     }
     //store previous position & current
-    //curr_goal_offset[1] = diff_curr_goal_now[1];
+    curr_goal_offset[1] = diff_curr_goal_now[1];
     current_offset[1]   = current_now[1];
+    vel_offset[1] = vel_now[1];
 
     //curr_goal_offset[2] = diff_curr_goal_now[2];
     current_offset[2]   = current_now[2]; 
