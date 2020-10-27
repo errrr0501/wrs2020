@@ -43,6 +43,7 @@ double bias_vel[MAX_JOINT_ID+1] = {0};
 int if_hit[MAX_JOINT_ID+1] = {0};
 int detect_hit[MAX_JOINT_ID+1] = {0};
 int timer1 = 0;
+float totaltime = 0;
 bool init_var = false;
 double avg_cur[7] = {0};
 double avg_cur1,avg_cur2 = 0;
@@ -572,8 +573,10 @@ void BaseModule::generateJointTrajProcess()
   }
 
   robotis_->mov_time_ = max_diff / tol;
+    std::cout<<"totaltime1 is : "<<robotis_->mov_time_<<std::endl;
   int all_time_steps = int(floor((robotis_->mov_time_ / robotis_->smp_time_) + 1.0));
   robotis_->mov_time_ = double(all_time_steps - 1) * robotis_->smp_time_;
+    std::cout<<"totaltime2 is : "<<robotis_->mov_time_<<std::endl;
 
   if (robotis_->mov_time_ < mov_time)
     robotis_->mov_time_ = mov_time;
@@ -762,7 +765,8 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
 
     //std::cout<<avg_cur1<<":"<<avg_cur2<<std::endl;
     //std::cout<<bias_pos[1]<<","<<bias_cur[1]<<std::endl;
-    std::cout<<bias_vel[1]<<std::endl;
+    //std::cout<<bias_vel[1]<<std::endl;
+    std::cout<<bias_pos[1]<<","<<bias_vel[1]<<","<<bias_cur[1]<<std::endl;
 
     //if motor1 hits something
     double joint_speed = robotis_->joint_pose_msg_.speed;
