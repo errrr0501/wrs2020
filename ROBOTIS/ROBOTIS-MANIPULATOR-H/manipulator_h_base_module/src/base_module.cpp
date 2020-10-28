@@ -759,18 +759,18 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     current_now[2]        = joint_state_->curr_joint_state_[2].effort_;
 
     //calculatie bias
-    bias_pos[1] = std::abs((diff_curr_goal_now[1] - curr_goal_offset[1])*100000);
-    bias_cur[1] = std::abs((current_now[1] - current_offset[1])*10);
-    bias_vel[1] = std::abs((vel_now[1] - vel_offset[1])*100);
+    bias_pos[1] = ((diff_curr_goal_now[1] - curr_goal_offset[1])*100);
+    bias_cur[1] = ((current_now[1] - current_offset[1]));
+    bias_vel[1] = ((vel_now[1] - vel_offset[1])*100);
 
     //bias_pos[2] = std::abs((diff_curr_goal_now[2] - curr_goal_offset[2])*100000);
-    bias_cur[2] = std::abs((current_now[2] - current_offset[2])*10);
+    bias_cur[2] = (current_now[2] - current_offset[2]);
 
     //std::cout<<avg_cur1<<":"<<avg_cur2<<std::endl;
     //std::cout<<bias_pos[1]<<","<<bias_cur[1]<<std::endl;
     //std::cout<<bias_vel[1]<<std::endl;
-    //std::cout<<bias_pos[1]<<","<<bias_vel[1]<<","<<bias_cur[1]<<std::endl;
-    std::cout<<joint_state_->goal_joint_state_[1].position_<<std::endl;
+    std::cout<<bias_pos[1]<<","<<bias_vel[1]<<","<<bias_cur[1]<<std::endl;
+    //std::cout<<joint_state_->goal_joint_state_[1].position_<<std::endl;
 
     //double joint_speed = robotis_->joint_pose_msg_.speed;
 
@@ -791,9 +791,9 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       }    
       avg_cur2 /= 4;  
     }
-    std::cout<<"==="<<avg_cur1<<"&"<<avg_cur2<<"==="<<std::endl;
+    //std::cout<<"==="<<avg_cur1<<"&"<<avg_cur2<<"==="<<std::endl;
 
-    if(bias_cur[1] >= (avg_cur1+50) && init_var != true)  //bias_pos[1] >= 300 && bias_cur[1] >= 100 (joint_speed)*10
+    if(std::abs(bias_cur[1]) >= (avg_cur1+8) && init_var != true)  //bias_pos[1] >= 300 && bias_cur[1] >= 100 (joint_speed)*10
     {
       data_latch1 = true;
       if_hit[1]++;
@@ -806,12 +806,12 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       if(if_hit[1] >= 2)
       {
         std::cout<<"====== alart! Robot hit something[1]! ======"<<std::endl;
-        stop();  
+        //stop();  
         if_hit[1] = 0;      
       }
     }
     //if motor2 hits something
-    if(bias_cur[2] >= (avg_cur2+50) && init_var != true)  //bias_pos[2] >= 100 && bias_cur[2] >= 85  //(joint_speed)*5+150) (joint_speed)*5+50
+    if(std::abs(bias_cur[2]) >= (avg_cur2+8) && init_var != true)  //bias_pos[2] >= 100 && bias_cur[2] >= 85  //(joint_speed)*5+150) (joint_speed)*5+50
     {
       data_latch2 = true;
       if_hit[2]++;
@@ -823,7 +823,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
       if(if_hit[2] >= 2)
       {
         std::cout<<"====== alart! Robot hit something[2]! ======"<<std::endl;
-        stop();  
+        //stop();  
         if_hit[2] = 0;      
       }
     }
@@ -869,12 +869,12 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     if(data_latch1 == false)
     {
       data1_offset.erase(data1_offset.begin()+2);
-      data1_offset.push_back(bias_cur[1]);
+      data1_offset.push_back(std::abs(bias_cur[1]));
     }
     if(data_latch2 == false)
     {
       data2_offset.erase(data2_offset.begin()+2);
-      data2_offset.push_back(bias_cur[2]);
+      data2_offset.push_back(std::abs(bias_cur[2]));
     }
 
     avg_cur1,avg_cur2 = 0;
