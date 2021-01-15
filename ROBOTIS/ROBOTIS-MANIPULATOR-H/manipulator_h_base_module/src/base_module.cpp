@@ -793,7 +793,7 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
     }
     //std::cout<<"==="<<avg_cur1<<"&"<<avg_cur2<<"==="<<std::endl;
 
-    if(std::abs(bias_cur[1]) >= (avg_cur1+8) && init_var != true)  //bias_pos[1] >= 300 && bias_cur[1] >= 100 (joint_speed)*10
+    if(std::abs(bias_cur[1]) >= (avg_cur1+5) && init_var != true)  //bias_pos[1] >= 300 && bias_cur[1] >= 100 (joint_speed)*10
     {
       data_latch1 = true;
       if_hit[1]++;
@@ -803,15 +803,15 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
         std::cout<<"???[1]"<<std::endl;
         //std::cout<<joint_speed<<std::endl;
       }
-      if(if_hit[1] >= 2)
+      if(if_hit[1] >= 3)
       {
         std::cout<<"====== alart! Robot hit something[1]! ======"<<std::endl;
-        //stop();  
+        stop();  
         if_hit[1] = 0;      
       }
     }
     //if motor2 hits something
-    if(std::abs(bias_cur[2]) >= (avg_cur2+8) && init_var != true)  //bias_pos[2] >= 100 && bias_cur[2] >= 85  //(joint_speed)*5+150) (joint_speed)*5+50
+    if(std::abs(bias_cur[2]) >= (avg_cur2+5) && init_var != true)  //bias_pos[2] >= 100 && bias_cur[2] >= 85  //(joint_speed)*5+150) (joint_speed)*5+50
     {
       data_latch2 = true;
       if_hit[2]++;
@@ -820,10 +820,10 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
         detect_hit[2]++;
         std::cout<<"???[2]"<<std::endl;
       }
-      if(if_hit[2] >= 2)
+      if(if_hit[2] >= 3)
       {
         std::cout<<"====== alart! Robot hit something[2]! ======"<<std::endl;
-        //stop();  
+        stop();  
         if_hit[2] = 0;      
       }
     }
@@ -995,6 +995,7 @@ void BaseModule::stop()
   stop_msg.slide_pos = slide_->goal_slide_pos;
   stop_msg.speed     = 10;
   robotis_->joint_pose_msg_ = stop_msg;
+  stop_flag = true;
 
   if (!stop_flag)
   {
