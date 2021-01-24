@@ -31,6 +31,8 @@ find_package(catkin REQUIRED COMPONENTS
   robotis_framework_common
   manipulator_h_kinematics_dynamics
   moveit_msgs
+  robotiq_2f_gripper_msgs
+  robotiq_2f_gripper_control
   actionlib
 )
 
@@ -74,7 +76,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS roscpp roslib std_msgs geometry_msgs robotis_controller_msgs manipulator_h_base_module_msgs cmake_modules robotis_math robotis_framework_common manipulator_h_kinematics_dynamics linear_motion moveit_msgs actionlib
-  DEPENDS Boost EIGEN3  
+  DEPENDS Boost EIGEN3 robotiq_2f_gripper_msgs 
 )
 
 ################################################################################

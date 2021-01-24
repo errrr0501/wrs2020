@@ -33,4 +33,5 @@
   <depend>yaml-cpp</depend>
   <depend>moveit_msgs</depend>
   <depend>actionlib</depend>
+  <depend>robotiq_2f_gripper_msgs</depend>
 </package>

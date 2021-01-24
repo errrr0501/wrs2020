@@ -103,6 +103,10 @@ public:
     void sendKinematicsPoseMsg(manipulator_h_base_module_msgs::KinematicsPose msg);
     void sendP2PPoseMsg( manipulator_h_base_module_msgs::P2PPose msg );
     void sendMoveItPoseMsg( manipulator_h_base_module_msgs::P2PPose msg );
+    //========robotiq_2f_gripper=========================================
+    void sendGrapPoseMsg( manipulator_h_base_module_msgs::P2PPose msg );
+    void sendReleasePoseMsg( manipulator_h_base_module_msgs::P2PPose msg );
+    //=====================================================================
     void getCurrPose(double (&data)[7]);
     inline QString getName(){return self_name_;}
 
@@ -134,6 +138,8 @@ private:
     ros::Publisher      kinematics_pose_msg_pub_;
     ros::Publisher      p2p_pose_msg_pub_;
     ros::Publisher      moveit_pose_msg_pub_;
+    ros::Publisher      grap_pose_msg_pub_;
+    ros::Publisher      release_pose_msg_pub_;
 
     ros::ServiceClient  get_joint_pose_client_;
     ros::ServiceClient  get_kinematics_pose_client_;
