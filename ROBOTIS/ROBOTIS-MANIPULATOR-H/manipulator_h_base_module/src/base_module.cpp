@@ -434,7 +434,7 @@ void BaseModule::p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPos
 void BaseModule::robotiq_2f_gripper_Client(){
 
   actionlib::SimpleActionClient<robotiq_2f_gripper_msgs::CommandRobotiqGripperAction> grap_action_client_("/command_robotiq_action");
-  grap_action_client_.waitForServer(ros::Duration(3.0));
+  //grap_action_client_.waitForServer(ros::Duration(0.0));
   ROS_INFO("Connected to grap_action server");
 
   ROS_INFO("Action server started.");
@@ -442,16 +442,23 @@ void BaseModule::robotiq_2f_gripper_Client(){
   //robotiq_2f_gripper_msgs::JointConstraint jc;
   //robotiq_2f_gripper_msgs::Constraints ct;
   //goal = CommandRobotiqGripperGoal()
+  // bool False = false;
+  // goal.emergency_release = False;
+  // goal.stop = False;
+  // goal.position = 0.041;
+  // goal.speed = 0.1;
+  // goal.force = 400.0;
   bool False = false;
   goal.emergency_release = False;
   goal.stop = False;
-  goal.position = 0.001;
+  goal.position = 0.075;
   goal.speed = 0.1;
-  goal.force = 400.0;
+  goal.force = 0.5;
+
 
   grap_action_client_.sendGoalAndWait(goal);
   ROS_INFO("start send goal to Gripper");
-  bool finished_before_timeout = grap_action_client_.waitForResult(ros::Duration(3.0));
+  bool finished_before_timeout = grap_action_client_.waitForResult(ros::Duration(0.0));
 
   if (finished_before_timeout)                             
   {
@@ -474,8 +481,8 @@ void BaseModule::robotiq_2f_gripper_Client(){
 void BaseModule::releasePoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg){
 
   actionlib::SimpleActionClient<robotiq_2f_gripper_msgs::CommandRobotiqGripperAction> release_action_client_("/command_robotiq_action");
-  release_action_client_.waitForServer(ros::Duration(3.0));
-  ROS_INFO("Connected to move_action server");
+  //release_action_client_.waitForServer(ros::Duration(0.0));
+  ROS_INFO("Connected to release_action server");
 
   ROS_INFO("Action server started.");
   robotiq_2f_gripper_msgs::CommandRobotiqGripperGoal goal;
@@ -491,7 +498,7 @@ void BaseModule::releasePoseMsgCallback(const manipulator_h_base_module_msgs::P2
 
   release_action_client_.sendGoalAndWait(goal);
   ROS_INFO("start send Release gripper");
-  bool finished_before_timeout = release_action_client_.waitForResult(ros::Duration(3.0));
+  bool finished_before_timeout = release_action_client_.waitForResult(ros::Duration(0.0));
 
   if (finished_before_timeout)                             
   {
@@ -584,7 +591,6 @@ void BaseModule::grapPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPo
     publishStatusMsg(robotis_controller_msgs::StatusMsg::STATUS_INFO, "End Trajectory (p2p IK Failed)");
     return;
   }
-  robotiq_2f_gripper_Client();
   robotis_->is_ik = false;
   return;
 }
@@ -1221,6 +1227,9 @@ void BaseModule::process(std::map<std::string, robotis_framework::Dynamixel *> d
   {
     ROS_INFO("[end] send trajectory");
     publishStatusMsg(robotis_controller_msgs::StatusMsg::STATUS_INFO, "End Trajectory");
+    //robotiq_2f_gripper_Client();
+    tra_gene_thread_ = new boost::thread(boost::bind(&BaseModule::robotiq_2f_gripper_Client, this));
+    delete tra_gene_thread_;
     ///////////////////
     {
       std::lock_guard<std::mutex>lock(mutex);

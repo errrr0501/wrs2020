@@ -228,10 +228,10 @@ if __name__ == "__main__":
     server = CommandGripperActionServer(rospy.get_namespace(), 'command_robotiq_action', gripper_driver)
     
     # Send and Request data from gripper and update joint state every `r`[Hz]
-    r = rospy.Rate(rospy.get_param('~rate', 50 if not sim else 20))
+    r = rospy.Rate(rospy.get_param('~rate', 10 if not sim else 5))
     while not rospy.is_shutdown():
         gripper_driver.update_driver()
-        r.sleep()
+        #r.sleep()
 
     rospy.spin()
     
