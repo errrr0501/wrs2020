@@ -451,7 +451,7 @@ void BaseModule::robotiq_2f_gripper_Client(){
   bool False = false;
   goal.emergency_release = False;
   goal.stop = False;
-  goal.position = 0.075;
+  goal.position = 0.065;
   goal.speed = 0.1;
   goal.force = 0.5;
 
