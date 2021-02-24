@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   robotis_controller
   manipulator_h_base_module
+  robotiq_2f_gripper_control
 )
 
 ################################################################################
@@ -32,7 +33,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
 catkin_package(
-  CATKIN_DEPENDS roscpp robotis_controller manipulator_h_base_module
+  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS roscpp robotis_controller manipulator_h_base_module robotiq_2f_gripper_control
 )
 
 ################################################################################

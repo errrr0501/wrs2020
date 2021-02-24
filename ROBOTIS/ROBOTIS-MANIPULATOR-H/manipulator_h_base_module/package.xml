@@ -17,6 +17,7 @@
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/ROBOTIS-MANIPULATOR-H/issues</url>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>robotis_controller</build_depend>
+
   <depend>roscpp</depend>
   <depend>roslib</depend>
   <depend>std_msgs</depend>
@@ -33,5 +34,5 @@
   <depend>yaml-cpp</depend>
   <depend>moveit_msgs</depend>
   <depend>actionlib</depend>
-  <depend>robotiq_2f_gripper_msgs</depend>
+
 </package>

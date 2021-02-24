@@ -31,8 +31,6 @@ find_package(catkin REQUIRED COMPONENTS
   robotis_framework_common
   manipulator_h_kinematics_dynamics
   moveit_msgs
-  robotiq_2f_gripper_msgs
-  robotiq_2f_gripper_control
   actionlib
 )
 
@@ -51,7 +49,7 @@ find_library(YAML_CPP_LIBRARY
   NAMES YAML_CPP
   PATHS ${YAML_CPP_LIBRARY_DIRS}
 )
-link_directories(${YAML_CPP_LIBRARY_DIRS})
+link_directories(${YAML_CPP_LIBRARY_DIRS}) 
 
 if(NOT ${YAML_CPP_VERSION} VERSION_LESS "0.5")
 add_definitions(-DHAVE_NEW_YAMLCPP)
@@ -75,8 +73,8 @@ endif(NOT ${YAML_CPP_VERSION} VERSION_LESS "0.5")
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp roslib std_msgs geometry_msgs robotis_controller_msgs manipulator_h_base_module_msgs cmake_modules robotis_math robotis_framework_common manipulator_h_kinematics_dynamics linear_motion moveit_msgs actionlib
-  DEPENDS Boost EIGEN3 robotiq_2f_gripper_msgs 
+  CATKIN_DEPENDS roscpp roslib std_msgs geometry_msgs robotis_controller_msgs manipulator_h_base_module_msgs cmake_modules robotis_math robotis_framework_common manipulator_h_kinematics_dynamics linear_motion moveit_msgs actionlib 
+  DEPENDS Boost EIGEN3 
 )
 
 ################################################################################
@@ -93,6 +91,7 @@ include_directories(
 add_library(${PROJECT_NAME} src/base_module.cpp src/robotis_state.cpp src/slide_control.cpp)
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES} ${YAML_CPP_LIBRARIES})
+#find_library(robotiq_2f_gripper_control.h PATHS ${robotiq_2f_gripper_control}/include/)
 
 ################################################################################
 # Install

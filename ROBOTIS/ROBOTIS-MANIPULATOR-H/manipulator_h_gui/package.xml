@@ -18,6 +18,7 @@
   <depend>roscpp</depend>
   <depend>robotis_controller_msgs</depend>
   <depend>manipulator_h_base_module_msgs</depend>
+  <depend>robotiq_2f_gripper_msgs</depend>
   <!--depend>qt_build</depend-->
   <!--depend>libqt4-dev</depend-->
   <depend>qtbase5-dev</depend>
