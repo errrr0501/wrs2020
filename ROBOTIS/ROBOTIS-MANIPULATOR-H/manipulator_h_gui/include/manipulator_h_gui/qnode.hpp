@@ -109,7 +109,7 @@ public:
     void sendP2PPoseMsg( manipulator_h_base_module_msgs::P2PPose msg );
     void sendMoveItPoseMsg( manipulator_h_base_module_msgs::P2PPose msg );
     //========robotiq_2f_gripper=========================================
-    void sendGrapPoseMsg(std_msgs::String msg);
+    void sendGrapAlcoholMsg(std_msgs::String msg);
     void sendReleasePoseMsg(std_msgs::String msg);
     //=====================================================================
 
@@ -145,7 +145,7 @@ private:
     ros::Publisher      p2p_pose_msg_pub_;
     ros::Publisher      moveit_pose_msg_pub_;
 
-    ros::Publisher      grap_pose_msg_pub_;
+    ros::Publisher      grap_alcohol_msg_pub_;
     ros::Publisher      release_pose_msg_pub_;
     
     

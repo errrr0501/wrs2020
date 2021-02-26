@@ -136,14 +136,7 @@ public:
   void p2pPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);   //new
   void moveitPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);
   void moveitClient(std::vector<double> moveit_goal,moveit_msgs::MoveGroupResult &Result);
-  //=========robotiq2f_gripper=============================================================
-  // void grapPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);
-  // void robotiq_2f_gripper_Client();
-  // void releasePoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);
-  //=======================================================================================
-  //========ScrapClean====================================================================
-  // void ScrapCleanPoseMsgCallback(const manipulator_h_base_module_msgs::P2PPose::ConstPtr& msg);
-  //=========================================================================================
+
   bool getJointPoseCallback(manipulator_h_base_module_msgs::GetJointPose::Request &req,
                             manipulator_h_base_module_msgs::GetJointPose::Response &res);
   bool getKinematicsPoseCallback(manipulator_h_base_module_msgs::GetKinematicsPose::Request &req,

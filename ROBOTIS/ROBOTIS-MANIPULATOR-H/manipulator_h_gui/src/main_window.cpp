@@ -252,13 +252,13 @@ void MainWindow::on_des_MoveIt_button_clicked( bool check )
 }
 
 //=============robotiq_2f_gripper=========================
-void MainWindow::on_des_Grap_button_clicked( bool check )
+void MainWindow::on_des_Grap_Alcohol_button_clicked( bool check )
 {
   std_msgs::String msg;
 
   msg.data ="Gripper_grap";
 
-  qnode.sendGrapPoseMsg( msg );
+  qnode.sendGrapAlcoholMsg( msg );
 }
 void MainWindow::on_des_Release_button_clicked( bool check )
 {

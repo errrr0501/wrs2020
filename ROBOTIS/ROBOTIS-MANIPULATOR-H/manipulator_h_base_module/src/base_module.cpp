@@ -179,20 +179,6 @@ void BaseModule::queueThread()
                                                                &BaseModule::p2pPoseMsgCallback, this);
   ros::Subscriber moveit_pose_msg_sub = ros_node.subscribe("moveit_pose_msg", 5,
                                                                &BaseModule::moveitPoseMsgCallback, this);
-  // //////////////////////////robitq2f_85////////////////////////////////////////////////////////////////////////                                                        
-  // ros::Subscriber grap_pose_msg_sub = ros_node.subscribe("grap_pose_msg", 5,
-  //                                                              &BaseModule::grapPoseMsgCallback, this); 
-  // ros::Subscriber release_pose_msg_sub = ros_node.subscribe("release_pose_msg", 5,
-  //                                                              &BaseModule::releasePoseMsgCallback, this);                                                                
-  // //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // //==================ScrapClean================================================================================
-  // ros::Subscriber ScrapClean_pose_msg_sub = ros_node.subscribe("release_pose_msg", 5,
-  //                                                              &BaseModule::ScrapCleanPoseMsgCallback, this);  
-  // ros::Subscriber grap_pose_msg_sub = ros_node.subscribe("grap_pose_msg", 5,
-  //                                                              &GripperControl::grapPoseMsgCallback, this); 
-  // ros::Subscriber release_pose_msg_sub = ros_node.subscribe("release_pose_msg", 5,
-  //                                                              &GripperControl::releasePoseMsgCallback, this);   
-  // //============================================================================================================
   ros::ServiceServer get_joint_pose_server = ros_node.advertiseService("get_joint_pose",
                                                                        &BaseModule::getJointPoseCallback, this);
   ros::ServiceServer get_kinematics_pose_server = ros_node.advertiseService("get_kinematics_pose",

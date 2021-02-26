@@ -361,9 +361,9 @@
             </widget>
            </item>
           <item>
-           <widget class="QPushButton" name="des_Grap_button">
+           <widget class="QPushButton" name="des_Grap_Alcohol_button">
             <property name="text">
-              <string>Send Grap Pos.</string>
+              <string>Send Grap Alcohol.</string>
              </property>
             </widget>
            </item>

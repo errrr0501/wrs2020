@@ -91,7 +91,7 @@ public Q_SLOTS:
     void on_des_p2p_button_clicked( bool check );
     void on_des_MoveIt_button_clicked( bool check );
     //===========robotiq_2f_gripper===================
-    void on_des_Grap_button_clicked( bool check );
+    void on_des_Grap_Alcohol_button_clicked( bool check );
     void on_des_Release_button_clicked( bool check );
     //===============================================
 

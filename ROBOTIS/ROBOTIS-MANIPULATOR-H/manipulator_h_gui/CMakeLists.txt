@@ -14,7 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   robotis_controller_msgs
   manipulator_h_base_module_msgs
-  robotiq_2f_gripper_msgs
+  #robotiq_2f_gripper_msgs
   #qt_build
   cmake_modules
   eigen_conversions
@@ -67,7 +67,7 @@ endif()
 ################################################################################
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp robotis_controller_msgs manipulator_h_base_module_msgs cmake_modules robotiq_2f_gripper_msgs eigen_conversions
+  CATKIN_DEPENDS roscpp robotis_controller_msgs manipulator_h_base_module_msgs cmake_modules  eigen_conversions #robotiq_2f_gripper_msgs
   DEPENDS EIGEN3
 )
 

@@ -54,20 +54,30 @@ namespace robotiq_2f_gripper
 class GripperControl
 {
 private:
-  // int     init_argc_;
-  // char**  init_argv_;
+
   // bool grap ;
   // bool release ;
   // bool grap_alc ;
   // bool grap_scraper ;
-
+  // // int     init_argc_;
+  // // char**  init_argv_; 
+  // //int main(int argc, char** argv);
+ 
 public:
-  GripperControl();
-  virtual ~GripperControl();
-  //=========robotiq2f_gripper=============================================================
-  //void grapPoseMsgCallback(const std_msgs::String::ConstPtr& msg);
-  //void robotiq_2f_gripper_Client();
-  //void releasePoseMsgCallback(const std_msgs::String::ConstPtr& msg);
+
+
+  // GripperControl();
+  // virtual ~GripperControl();
+  // //=========robotiq2f_gripper=============================================================
+  // // void ROS_init(int argc, char** argv);
+  // static inline bool RecordGrapAlcohol(){return grap=true, grap_alc=true;}
+  // // void RecordGrapScrapper(const std_msgs::String::ConstPtr& msg);
+  // static inline bool RecordGrapRelease(){return release=true, grap=false;}
+  // void robotiq_2f_gripper_Client();
+  // void grapPoseMsgCallback(const std_msgs::String::ConstPtr& msg);
+  // void releasePoseMsgCallback(const std_msgs::String::ConstPtr& msg);
+  // void GrapAlcoholMsgCallback(const std_msgs::String::ConstPtr& msg);
+  // void ReleasePoseMsgCallback(const std_msgs::String::ConstPtr& msg);
   //=======================================================================================
   /* */
 

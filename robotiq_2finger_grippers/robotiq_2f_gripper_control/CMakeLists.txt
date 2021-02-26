@@ -98,11 +98,11 @@ install(DIRECTORY include/${PROJECT_NAME}/
   FILES_MATCHING PATTERN "*.h"
   PATTERN ".svn" EXCLUDE
 )
-add_library(${PROJECT_NAME} src/gripper_control.cpp)
+add_library(${PROJECT_NAME} src/robotiq_2f_gripper_control/gripper_control.cpp)
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${Eigen3_LIBRARIES} ${YAML_CPP_LIBRARIES})
 
-add_executable(gripper src/gripper_control.cpp)
+add_executable(gripper src/robotiq_2f_gripper_control/gripper_control.cpp)
 target_link_libraries(gripper ${catkin_LIBRARIES})
 #add_dependencies(talker dual_arm_control_generate_messages_cpp)
 
