@@ -150,6 +150,7 @@ void BaseModule::parseIniPoseData(const std::string &path)
 
 void BaseModule::queueThread()
 {
+  //ros::init(init_argc_,init_argv_,"BaseModule");
   ros::NodeHandle    ros_node;
   ros::CallbackQueue callback_queue;
 

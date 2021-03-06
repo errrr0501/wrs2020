@@ -1,21 +1,28 @@
 #include <stdio.h>
-#include <vector>
-
 #include "robotiq_2f_gripper_control/gripper_control.h"
 
-#include <cstdlib>
-#include <vector>
-#include <boost/thread.hpp>
 
-using namespace robotiq_2f_gripper;
 
-bool grap ;
-bool release ;
-bool grap_alc ;
-bool grap_scraper ; 
+namespace robotiq_2f_gripper{
 
 //==========================================roboticq2f_85======================================================
-void robotiq_2f_gripper_Client(){
+
+GripperControl::GripperControl(int argc, char **argv) :
+  init_argc_(argc),
+  init_argv_(argv)
+{}
+
+GripperControl::~GripperControl(){}
+
+void GripperControl::init()
+{
+    ros::init(init_argc_,init_argv_,"gripper_node");
+    ros::NodeHandle    gripper_node;
+    ros::Subscriber grap_pose_msg_sub = gripper_node.subscribe("grap_alcohol_msg", 5, &GripperControl::GrapAlcoholMsgCallback, this); 
+    ros::Subscriber release_pose_msg_sub = gripper_node.subscribe("release_pose_msg", 5, &GripperControl::ReleasePoseMsgCallback, this);  
+    ros::spin();
+}
+void GripperControl::robotiq_2f_gripper_Client(){
   actionlib::SimpleActionClient<robotiq_2f_gripper_msgs::CommandRobotiqGripperAction> grap_action_client_("/command_robotiq_action");
   grap_action_client_.waitForServer(ros::Duration(0.0));
   ROS_INFO("Connected to grap_action server");
@@ -72,7 +79,7 @@ void robotiq_2f_gripper_Client(){
   return;
 }
 //===============================================================
-void ReleasePoseMsgCallback(const std_msgs::String::ConstPtr& msg){
+void GripperControl::ReleasePoseMsgCallback(const std_msgs::String::ConstPtr& msg){
 
   ROS_INFO("Connected to release_action server");
 
@@ -91,7 +98,7 @@ void ReleasePoseMsgCallback(const std_msgs::String::ConstPtr& msg){
   return;
 }
 //===============================================================
-void GrapAlcoholMsgCallback(const std_msgs::String::ConstPtr& msg)
+void GripperControl::GrapAlcoholMsgCallback(const std_msgs::String::ConstPtr& msg)
 {
   ROS_INFO("Connected to grap_action server");
 
@@ -112,16 +119,4 @@ void GrapAlcoholMsgCallback(const std_msgs::String::ConstPtr& msg)
   }
   return;
 }
-
-int main(int argc, char **argv){
-
-  ros::init(argc, argv,"gripper_node");
-  ros::NodeHandle    gripper_node;
-  
-  //================================robitq2f_85========================================================================                                                           
-  ros::Subscriber grap_pose_msg_sub = gripper_node.subscribe("grap_alcohol_msg", 5, &GrapAlcoholMsgCallback); 
-  ros::Subscriber release_pose_msg_sub = gripper_node.subscribe("release_pose_msg", 5, &ReleasePoseMsgCallback);                                                            
-  ///=================================================================================================================
-
-  ros::spin();
 }

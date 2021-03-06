@@ -52,9 +52,9 @@ public:
     // std::string pos_y;
     // std::string pos_z;
     int speed;
-    char pos_x;
-    char pos_y;
-    char pos_z;
+    double pos_x;
+    double pos_y;
+    double pos_z;
     double ori_roll;
     double ori_pitch;
     double ori_yaw;
@@ -129,7 +129,7 @@ public:
 
 private:
     //Ui::MainWindowDesign ui;
-    StrategyeMsg strategy_msg;
+    StrategyMsg strategy_msg;
 
     // WipeStrategy wipe_strategy;
 

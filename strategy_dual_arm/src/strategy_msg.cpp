@@ -14,40 +14,40 @@ namespace strategy_dual_arm {
 ** Implementation
 *****************************************************************************/
 
-StrategyeMsg::StrategyeMsg(int argc, char** argv ) :
+StrategyMsg::StrategyMsg(int argc, char** argv ) :
   init_argc_(argc),
   init_argv_(argv)
 {}
 
-// StrategyeMsg::~StrategyeMsg() {
-//   if(ros::isStarted()) {
-//     ros::shutdown(); // explicitly needed since we use ros::start();
-//     ros::waitForShutdown();
-//   }
-//   //wait();
-// }
+StrategyMsg::~StrategyMsg() {
+  if(ros::isStarted()) {
+    ros::shutdown(); // explicitly needed since we use ros::start();
+    ros::waitForShutdown();
+  }
+  //wait();
+}
 
-bool StrategyeMsg::init() {
+bool StrategyMsg::init() {
   ros::init(init_argc_,init_argv_,"Strategy_Msg");
 
   ros::start(); // explicitly needed since our nodehandle is going out of scope.
-  ros::NodeHandle n;
+  ros::NodeHandle nm;
   ros::NodeHandle n_private("~");
 
   // Add your ros communications here.
-  ini_pose_msg_pub_ = n.advertise<std_msgs::String>("ini_pose_msg", 0);
-  set_mode_msg_pub_ = n.advertise<std_msgs::String>("set_mode_msg", 0);
+  ini_pose_msg_pub_ = nm.advertise<std_msgs::String>("ini_pose_msg", 0);
+  set_mode_msg_pub_ = nm.advertise<std_msgs::String>("set_mode_msg", 0);
 
-  joint_pose_msg_pub_ = n.advertise<manipulator_h_base_module_msgs::JointPose>("joint_pose_msg", 0);
-  kinematics_pose_msg_pub_ = n.advertise<manipulator_h_base_module_msgs::KinematicsPose>("kinematics_pose_msg", 0);
-  p2p_pose_msg_pub_ = n.advertise<manipulator_h_base_module_msgs::P2PPose>("p2p_pose_msg", 0);
-  moveit_pose_msg_pub_ = n.advertise<manipulator_h_base_module_msgs::P2PPose>("moveit_pose_msg", 0);
+  joint_pose_msg_pub_ = nm.advertise<manipulator_h_base_module_msgs::JointPose>("joint_pose_msg", 0);
+  kinematics_pose_msg_pub_ = nm.advertise<manipulator_h_base_module_msgs::KinematicsPose>("kinematics_pose_msg", 0);
+  p2p_pose_msg_pub_ = nm.advertise<manipulator_h_base_module_msgs::P2PPose>("p2p_pose_msg", 0);
+  moveit_pose_msg_pub_ = nm.advertise<manipulator_h_base_module_msgs::P2PPose>("moveit_pose_msg", 0);
   //======================robitq2f_85====================================================================================
-  grap_alcohol_msg_pub_ = n.advertise<std_msgs::String>("grap_alcohol_msg", 0);
-  release_pose_msg_pub_ = n.advertise<std_msgs::String>("release_pose_msg", 0);
+  grap_alcohol_msg_pub_ = nm.advertise<std_msgs::String>("grap_alcohol_msg", 0);
+  release_pose_msg_pub_ = nm.advertise<std_msgs::String>("release_pose_msg", 0);
   //==============================================================================================================/
-  get_joint_pose_client_ = n.serviceClient<manipulator_h_base_module_msgs::GetJointPose>("get_joint_pose", 0);
-  get_kinematics_pose_client_ = n.serviceClient<manipulator_h_base_module_msgs::GetKinematicsPose>("get_kinematics_pose", 0);
+  get_joint_pose_client_ = nm.serviceClient<manipulator_h_base_module_msgs::GetJointPose>("get_joint_pose", 0);
+  get_kinematics_pose_client_ = nm.serviceClient<manipulator_h_base_module_msgs::GetKinematicsPose>("get_kinematics_pose", 0);
 
   //status_msg_sub_ = n.subscribe("status", 10, &StrategyeMsg::statusMsgCallback, this);
 
@@ -58,7 +58,7 @@ bool StrategyeMsg::init() {
   return true;
 }
 
-void StrategyeMsg::run() {
+void StrategyMsg::run() {
 
   ros::Rate loop_rate(50);
 
@@ -118,27 +118,27 @@ void StrategyeMsg::run() {
 //   Q_EMIT loggingUpdated(); // used to readjust the scrollbar
 // }
 
-void StrategyeMsg::sendJointPoseMsg( manipulator_h_base_module_msgs::JointPose msg )
+void StrategyMsg::sendJointPoseMsg( manipulator_h_base_module_msgs::JointPose msg )
 {
   joint_pose_msg_pub_.publish( msg );
 
   ROS_INFO( "Send Joint Pose Msg" );
 }
 
-void StrategyeMsg::sendKinematicsPoseMsg( manipulator_h_base_module_msgs::KinematicsPose msg )
+void StrategyMsg::sendKinematicsPoseMsg( manipulator_h_base_module_msgs::KinematicsPose msg )
 {
   kinematics_pose_msg_pub_.publish( msg );
 
   ROS_INFO( "Send Kinematics Pose Msg" );
 }
 
-void StrategyeMsg::sendP2PPoseMsg( manipulator_h_base_module_msgs::P2PPose msg )
+void StrategyMsg::sendP2PPoseMsg( manipulator_h_base_module_msgs::P2PPose msg )
 {
   p2p_pose_msg_pub_.publish( msg );
 
   ROS_INFO( "Send P2P Pose Msg" );
 }
-void StrategyeMsg::sendMoveItPoseMsg( manipulator_h_base_module_msgs::P2PPose msg )
+void StrategyMsg::sendMoveItPoseMsg( manipulator_h_base_module_msgs::P2PPose msg )
 {
   moveit_pose_msg_pub_.publish( msg );
 
@@ -146,33 +146,33 @@ void StrategyeMsg::sendMoveItPoseMsg( manipulator_h_base_module_msgs::P2PPose ms
 }
 
 //========robotiq_2f_gripper=======================
-void StrategyeMsg::sendGrapAlcoholMsg( std_msgs::String msg )
+void StrategyMsg::sendGrapAlcoholMsg( std_msgs::String msg )
 {
   grap_alcohol_msg_pub_.publish( msg );
 
   ROS_INFO( "Send Grap Alcohol Msg" );
 }
-void StrategyeMsg::sendReleasePoseMsg( std_msgs::String msg )
+void StrategyMsg::sendReleasePoseMsg( std_msgs::String msg )
 {
   release_pose_msg_pub_.publish( msg );
 
   ROS_INFO( "Send Release Pose Msg" );
 }
 //=============================================================
-void StrategyeMsg::sendIniPoseMsg( std_msgs::String msg )
+void StrategyMsg::sendIniPoseMsg( std_msgs::String msg )
 {
   ini_pose_msg_pub_.publish ( msg );
 
   ROS_INFO( "Go to Manipulator Initial Pose" );
 }
 
-void StrategyeMsg::sendSetModeMsg( std_msgs::String msg )
+void StrategyMsg::sendSetModeMsg( std_msgs::String msg )
 {
   set_mode_msg_pub_.publish ( msg );
   ROS_INFO( "Set BaseModule" );
 }
 
-void StrategyeMsg::getJointPose( std::vector<std::string> joint_name )
+void StrategyMsg::getJointPose( std::vector<std::string> joint_name )
 {
   ROS_INFO( "Get Current Joint Pose" );
 
@@ -200,7 +200,7 @@ void StrategyeMsg::getJointPose( std::vector<std::string> joint_name )
     ROS_INFO( "fail to get joint pose.");
 }
 
-void StrategyeMsg::getKinematicsPose ( std::string group_name )
+void StrategyMsg::getKinematicsPose ( std::string group_name )
 {
   ROS_INFO( "Get Current Kinematics Pose" );
 
@@ -225,7 +225,7 @@ void StrategyeMsg::getKinematicsPose ( std::string group_name )
     ROS_INFO( "fail to get kinematcis pose.");
 }
 
-void StrategyeMsg::getCurrPose(double (&data)[7])
+void StrategyMsg::getCurrPose(double (&data)[7])
 {
   manipulator_h_base_module_msgs::GetKinematicsPose _get_kinematics_pose;
  
@@ -248,4 +248,4 @@ void StrategyeMsg::getCurrPose(double (&data)[7])
   return;
     
 }
-}  // wipe_clean
+}  

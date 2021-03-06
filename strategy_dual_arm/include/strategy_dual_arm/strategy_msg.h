@@ -38,17 +38,19 @@
 
 namespace strategy_dual_arm
 {
-class StrategyeMsg
+class StrategyMsg
 {
 public:
-  StrategyeMsg(int argc, char** argv);
-  virtual ~StrategyeMsg();
+  StrategyMsg(int argc, char** argv);
+  virtual ~StrategyMsg();
+  //~StrategyeMsg();
+
   bool init();
   void run();
-    enum LogLevel
-    {
-        Debug, Info, Warn, Error, Fatal
-    };
+    // enum LogLevel
+    // {
+    //     Debug, Info, Warn, Error, Fatal
+    // };
 
     // QStringListModel* loggingModel()
     // {

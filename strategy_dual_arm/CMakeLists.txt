@@ -20,20 +20,20 @@ find_package(catkin REQUIRED COMPONENTS
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
-find_package(Qt5Widgets REQUIRED)
+#find_package(Qt5Widgets REQUIRED)
 
 
 set(${PROJECT_NAME}_SRCS
   src/wipe_strategy.cpp
   src/strategy_msg.cpp
   src/main_strategy.cpp
-  src/test.cpp
+  #src/test.cpp
 )
 
 set(${PROJECT_NAME}_HDRS
   include/${PROJECT_NAME}/wipe_strategy.h
   include/${PROJECT_NAME}/strategy_msg.h
-  include/${PROJECT_NAME}/test.h
+  #include/${PROJECT_NAME}/test.h
   #include/${PROJECT_NAME}/main_strategy.hpp
 )
 

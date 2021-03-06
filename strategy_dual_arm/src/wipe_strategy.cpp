@@ -19,10 +19,10 @@ namespace strategy_dual_arm {
 /*****************************************************************************
 ** Implementation [WipeStrategy]
 *****************************************************************************/
-
 WipeStrategy::WipeStrategy(int argc, char** argv)
   //: QMainWindow(parent)
-  :strategy_msg(argc,argv)
+  : strategy_msg(argc,argv)
+
 {
     speed = 10;
     pos_x = 0.000;
@@ -33,60 +33,24 @@ WipeStrategy::WipeStrategy(int argc, char** argv)
     ori_yaw    = 0.000;
     ori_phi    = 0.000;
 
-    
-//   ui.setupUi(this); // Calling this incidentally connects all ui's triggers to on_...() callbacks in this class.
-//   QObject::connect(ui.actionAbout_Qt, SIGNAL(triggered(bool)), qApp, SLOT(aboutQt())); // qApp is a global variable for the application
 
-//   setWindowIcon(QIcon(":/images/icon.png"));
-//   ui.tab_manager->setCurrentIndex(0); // ensure the first tab is showing - qt-designer should have this already hardwired, but often loses it (settings?).
-//   QObject::connect(&strategy_msg, SIGNAL(rosShutdown()), this, SLOT(close()));
-
-//   joint_name.push_back("joint1");
-//   joint_name.push_back("joint2");
-//   joint_name.push_back("joint3");
-//   joint_name.push_back("joint4");
-//   joint_name.push_back("joint5");
-//   joint_name.push_back("joint6");
-//   joint_name.push_back("joint7");
-
-  /*********************
-    ** Logging
-    **********************/
-//   ui.view_logging->setModel(StrategyeMsg.loggingModel());
-//   QObject::connect(&StrategyeMsg, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
-
-//   joint_spinbox.append( ui.joint1_spinbox );
-//   joint_spinbox.append( ui.joint2_spinbox );
-//   joint_spinbox.append( ui.joint3_spinbox );
-//   joint_spinbox.append( ui.joint4_spinbox );
-//   joint_spinbox.append( ui.joint5_spinbox );
-//   joint_spinbox.append( ui.joint6_spinbox );
-//   joint_spinbox.append( ui.joint7_spinbox );
-
-  /****************************
-    ** Connect
-    ****************************/
-
-//   qRegisterMetaType<manipulator_h_base_module_msgs::JointPose>("manipulator_h_base_module_msgs::JointPose");
-//   QObject::connect(&StrategyeMsg, SIGNAL(updateCurrentJointPose(manipulator_h_base_module_msgs::JointPose)), this, SLOT(updateCurrJointPoseSpinbox(manipulator_h_base_module_msgs::JointPose)));
-
-//   qRegisterMetaType<manipulator_h_base_module_msgs::KinematicsPose>("manipulator_h_base_module_msgs::KinematicsPose");
-//   QObject::connect(&StrategyeMsg, SIGNAL(updateCurrentKinematicsPose(manipulator_h_base_module_msgs::GetKinematicsPose)), this, SLOT(updateCurrKinematicsPoseSpinbox(manipulator_h_base_module_msgs::GetKinematicsPose)));
+  joint_name.push_back("joint1");
+  joint_name.push_back("joint2");
+  joint_name.push_back("joint3");
+  joint_name.push_back("joint4");
+  joint_name.push_back("joint5");
+  joint_name.push_back("joint6");
+  joint_name.push_back("joint7");
 
   
   /*********************
     ** Auto Start
     **********************/
   strategy_msg.init();
-  //setWindowTitle(StrategyeMsg.getName());
 
 }
 
-// WipeStrategy::~WipeStrategy()
-
-
 WipeStrategy::~WipeStrategy() {}
-//WipeStrategy::~WipeStrategy() {}
 
 /*****************************************************************************
 ** Implementation [Slots]
@@ -190,6 +154,9 @@ void WipeStrategy::on_des_pos()
 
 void WipeStrategy::on_des_p2p()
 {
+  //std::cout<<speed<<std::endl;
+  //std::cout<<pos_x,pos_y,pos_z<<std::endl;
+  //std::cout<<ori_roll,ori_pitch,ori_yaw<<std::endl;
   manipulator_h_base_module_msgs::P2PPose msg;
 
   msg.name = "arm";
@@ -211,6 +178,17 @@ void WipeStrategy::on_des_p2p()
   msg.pose.orientation.z = QR.z();
   msg.pose.orientation.w = QR.w();
   msg.phi = phi;
+
+  std::cout<<msg.speed<<std::endl;
+  std::cout<<msg.pose.position.x<<std::endl;
+  std::cout<<msg.pose.position.y<<std::endl;
+  std::cout<<msg.pose.position.z<<std::endl;
+  std::cout<<msg.pose.orientation.x<<std::endl;
+  std::cout<<msg.pose.orientation.y<<std::endl;
+  std::cout<<msg.pose.orientation.z<<std::endl;
+  std::cout<<msg.pose.orientation.w<<std::endl;
+  std::cout<<msg.phi<<std::endl;
+
 
   strategy_msg.sendP2PPoseMsg( msg );
 }
@@ -432,7 +410,7 @@ Eigen::MatrixXd WipeStrategy::quaternion2rotation( Eigen::Quaterniond quaternion
 //   QMainWindow::closeEvent(event);
 // }
 
-// int main(){
+// int main(int argc, char** argv){
     
 //     //MainStrategy MS;
 //     // strategy_dual_arm::WipeStrategy (argc,argv);
@@ -441,7 +419,7 @@ Eigen::MatrixXd WipeStrategy::quaternion2rotation( Eigen::Quaterniond quaternion
 //     //MainStrategy (argc,argv);
 //     //WipeStrategy::~WipeStrategy();
 
-//     WipeStrategy wipe_strategy();
+//     WipeStrategy wipe_strategy(argc,argv);
 //     //WipeStrategy (argc,argv);
 //     //StrategyeMsg (argc,argv);
 //     //WipeStrategy wipe;
