@@ -23,7 +23,6 @@ int main(int argc, char** argv){
     wipe_strategy.on_set_mode();
     sleep(3);
     //loop_rate.sleep();
-    //wipe_strategy.on_set_mode();
     wipe_strategy.on_set_mode();
     sleep(2);
     wipe_strategy.on_curr_joint();
